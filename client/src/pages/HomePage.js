@@ -6,11 +6,18 @@ import Product from '../components/Product';
 const HomePage = () => {
   return (
     <>
-      <h1>Listed Products</h1>
+      <h2 className='fs-2 text-dark'>Listed Products</h2>
       <Row>
         {products.map((product) => {
           return (
-            <Col sm={12} md={6} lg={4} xl={3} style={{ width: '17rem' }}>
+            <Col
+              sm={12}
+              md={6}
+              lg={4}
+              xl={3}
+              style={{ width: '17rem' }}
+              key={product._id}
+            >
               <Product product={product} />
             </Col>
           );
