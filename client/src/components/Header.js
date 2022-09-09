@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 
 const Header = () => {
@@ -6,7 +7,11 @@ const Header = () => {
     <header>
       <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
         <Container>
-          <Navbar.Brand href='/'>Plant the Seeds</Navbar.Brand>
+          <Navbar.Brand>
+            <Link to='/' className='text-decoration-none text-light'>
+              Plant the Seeds
+            </Link>
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='ms-auto'>
