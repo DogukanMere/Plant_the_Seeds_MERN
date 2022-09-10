@@ -1,0 +1,31 @@
+{
+  "name": "planttheseeds",
+  "version": "1.0.0",
+  "description": "Plant the Seeds MERN App",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server",
+    "server": "nodemon server/server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DogukanMere/Plant_the_Seeds_MERN.git"
+  },
+  "author": "Dogukan Mere",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DogukanMere/Plant_the_Seeds_MERN/issues"
+  },
+  "homepage": "https://github.com/DogukanMere/Plant_the_Seeds_MERN#readme",
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "concurrently": "^7.4.0",
+    "nodemon": "^2.0.19"
+  }
+}

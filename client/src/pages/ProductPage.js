@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
-import products from '../products';
 
 const ProductPage = () => {
-  const params = useParams();
-  const product = products.find((item) => item._id === params.id);
-  console.log(product);
+  const [product, setProduct] = useState({});
+
+  // take id parameters from url
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { data } = await axios.get(`/api/products/${id}`);
+      setProduct(data);
+    };
+
+    fetchProduct();
+  }, [id]);
+
   return (
     <>
       <Link className='btn btn-sm btn-light my-2' to='/'>
@@ -25,7 +36,7 @@ const ProductPage = () => {
           <ListGroup variant='flush'>
             <ListGroup.Item>
               <h3 className='text-main fw-bold text-uppercase fs-4'>
-                {product.name}
+                {product.name} SEED
               </h3>
             </ListGroup.Item>
             <ListGroup.Item>
@@ -85,9 +96,9 @@ const ProductPage = () => {
                   </Col>
                 </Row>
               </ListGroup.Item>
-              <ListGroup.Item className='py-2'>
+              <ListGroup.Item>
                 <Button
-                  className='btn btn-dark col-12'
+                  className='btn btn-dark col-12 py-2'
                   type='button'
                   disabled={product.amount === 0}
                 >
