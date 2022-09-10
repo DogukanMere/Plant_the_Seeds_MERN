@@ -1,24 +1,35 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import products from './data/products.js';
+const express = require('express');
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const productsRouter = require('./routes/products');
+const colors = require('colors');
 
 dotenv.config();
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Server is working');
-});
-
-app.get('/api/products', (req, res) => {
-  res.json(products);
-});
-
-app.get('/api/products/:id', (req, res) => {
-  const product = products.find((item) => item._id === req.params.id);
-  res.send(product);
-});
-
+// Set PORT
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, console.log(`Server running on port ${PORT}.`));
+// Middleware
+app.use(express.json());
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
+});
+
+// routes
+app.use('/api/products', productsRouter);
+
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_UI)
+  .then(() => {
+    app.listen(
+      PORT,
+      console.log(`Connected to DB | Server running on port ${PORT}.`.cyan.bold)
+    );
+  })
+  .catch((error) => {
+    console.log(`${error}`.red.underline.bold);
+  });
