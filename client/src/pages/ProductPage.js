@@ -14,39 +14,88 @@ const ProductPage = () => {
       </Link>
       <Row className='my-3'>
         <Col md={3}>
-          <Image src={product.image} alt={product.name} fluid />
+          <Image
+            src={product.image}
+            alt={product.name}
+            fluid
+            className='mb-2'
+          />
         </Col>
         <Col md={6}>
           <ListGroup variant='flush'>
             <ListGroup.Item>
-              <h3 className='text-dark fw-bold text-uppercase fs-4 pt-3'>
+              <h3 className='text-main fw-bold text-uppercase fs-4'>
                 {product.name}
               </h3>
             </ListGroup.Item>
             <ListGroup.Item>
-              <small className='text-dark'>{product.description}</small>
+              <small className='text-dark fs-6'>{product.description}</small>
             </ListGroup.Item>
             <ListGroup.Item>
               <Row>
                 <Col md={4} className='py-2'>
-                  <span className='text-success'>Duration:</span>
-                  <small className='text-dark'> {product.duration} days</small>
+                  <span className='text-main fw-bold fs-6'>Duration:</span>
+                  <small className='text-dark fs-6'>
+                    {' '}
+                    {product.duration} days
+                  </small>
                 </Col>
                 <Col md={4} className='py-2'>
-                  <span className='text-success'>Available Seeds:</span>
-                  <small className='text-dark'> {product.amount} pcs</small>
+                  <span className='text-main fw-bold fs-6'>
+                    Available Seeds:
+                  </span>
+                  <small className='text-dark fs-6'>
+                    {' '}
+                    {product.amount} pcs
+                  </small>
                 </Col>
                 <Col md={4} className='py-2'>
-                  <span className='text-success'>Yield:</span>
-                  <small className='text-dark'> {product.yield}</small>
+                  <span className='text-main fw-bold fs-6'>Yield:</span>
+                  <small className='text-dark fs-6'> {product.yield}</small>
                 </Col>
               </Row>
             </ListGroup.Item>
             <ListGroup.Item>
-              <span className='text-dark fs-5'>Price: </span>
-              <small className='text-dark fs-5'> ${product.price}</small>
+              <span className='text-main fw-bold fs-6'>Price: </span>
+              <small className='text-muted fw-bold fs-5'>
+                {' '}
+                ${product.price}
+              </small>
             </ListGroup.Item>
           </ListGroup>
+        </Col>
+        <Col md={3} className='mt-2'>
+          <Card>
+            <ListGroup variant='flush'>
+              <ListGroup.Item className='py-3'>
+                <Row>
+                  <Col>Status:</Col>
+                  <Col>
+                    <span>
+                      {product.amount > 0 ? 'In stock' : 'Out of stock'}
+                    </span>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item className='py-3'>
+                <Row>
+                  <Col>Price</Col>
+                  <Col>
+                    <span className='fw-bold'>${product.price}</span>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item className='py-2'>
+                <Button
+                  className='btn btn-dark col-12'
+                  type='button'
+                  disabled={product.amount === 0}
+                >
+                  Add to Cart
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
         </Col>
       </Row>
     </>

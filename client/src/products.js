@@ -16,7 +16,7 @@ const products = [
     description:
       'The carrot is a root vegetable, typically orange in color, though purple, black, red, white, and yellow cultivars exist',
     price: 18.0,
-    amount: 54,
+    amount: 23,
     duration: 55,
     yield: '8-10 pcs',
     image: '/images/carrot.jpeg',
@@ -27,7 +27,7 @@ const products = [
     description:
       'Parsley is an aromatic plant with an erect growth habit and possesses branched, hollow stems and dark green flat or curled leaves which are arranged alternately on the stems',
     price: 22.0,
-    amount: 14,
+    amount: 32,
     duration: 68,
     yield: '6-8 bunches',
     image: '/images/parsley.jpeg',
