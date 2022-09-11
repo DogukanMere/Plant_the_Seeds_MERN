@@ -18,7 +18,9 @@ const Product = ({ product }) => {
         <Card.Text as='div'>
           <p className='text-muted py-0'>
             Available Seeds:{' '}
-            <small className='text-main fw-bold'>{product.amount} pcs</small>
+            <small className='text-main fw-bold'>
+              {product.amountInStock} pcs
+            </small>
           </p>
           <strong className='text-muted'>
             Price: <small className='text-main fs-5'>${product.price}</small>

@@ -48,7 +48,7 @@ const ProductPage = () => {
                   <span className='text-main fw-bold fs-6'>Duration:</span>
                   <small className='text-dark fs-6'>
                     {' '}
-                    {product.duration} days
+                    {product.growTime} days
                   </small>
                 </Col>
                 <Col md={4} className='py-2'>
@@ -57,7 +57,7 @@ const ProductPage = () => {
                   </span>
                   <small className='text-dark fs-6'>
                     {' '}
-                    {product.amount} pcs
+                    {product.amountInStock} pcs
                   </small>
                 </Col>
                 <Col md={4} className='py-2'>
@@ -83,7 +83,7 @@ const ProductPage = () => {
                   <Col>Status:</Col>
                   <Col>
                     <span>
-                      {product.amount > 0 ? 'In stock' : 'Out of stock'}
+                      {product.amountInStock > 0 ? 'In stock' : 'Out of stock'}
                     </span>
                   </Col>
                 </Row>
@@ -100,7 +100,7 @@ const ProductPage = () => {
                 <Button
                   className='btn btn-dark col-12 py-2'
                   type='button'
-                  disabled={product.amount === 0}
+                  disabled={product.amountInStock === 0}
                 >
                   Add to Cart
                 </Button>
