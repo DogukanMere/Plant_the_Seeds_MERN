@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const productsRouter = require('./routes/products');
+const { pageNotFound, errorHandler } = require('./middleware/errorMiddleware');
 const colors = require('colors');
 
 dotenv.config();
@@ -20,6 +21,10 @@ app.use((req, res, next) => {
 
 // routes
 app.use('/api/products', productsRouter);
+
+// error handlers
+app.use(pageNotFound);
+app.use(errorHandler);
 
 // MongoDB connection
 mongoose

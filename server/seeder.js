@@ -6,9 +6,18 @@ const products = require('./data/products');
 const User = require('./models/userModule');
 const Product = require('./models/productModule');
 const Order = require('./models/orderModule');
-const connectDB = require('./config/db');
 
 dotenv.config();
+
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_UI);
+    console.log(`MongoDB connected`);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    process.exit(1);
+  }
+};
 
 connectDB();
 
