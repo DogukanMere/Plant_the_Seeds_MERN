@@ -1,33 +1,50 @@
-import React, { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { fetchProduct } from '../features/product/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
-import { listProductDetails } from '../actions/productActions';
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  FormSelect,
+} from 'react-bootstrap';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 
 const ProductPage = () => {
   // take id parameters from url
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  // State Quantity for a Product
+  const [qty, setQty] = useState(1);
 
   const dispatch = useDispatch();
 
-  const productDetails = useSelector((state) => state.productDetails);
-  const { loading, error, product } = productDetails;
+  const { product, isLoading, errorProduct } = useSelector(
+    (state) => state.products
+  );
 
   useEffect(() => {
-    dispatch(listProductDetails(id));
+    dispatch(fetchProduct(id));
   }, [dispatch, id]);
+
+  const addToCartHandler = () => {
+    navigate(`/cart/${id}?qty=${qty}`);
+  };
 
   return (
     <>
       <Link className='btn btn-sm btn-light my-2' to='/'>
         Back to List
       </Link>
-      {loading ? (
+      {isLoading ? (
         <Loader />
-      ) : error ? (
-        <Message variant='danger'>{error}</Message>
+      ) : errorProduct ? (
+        <Message variant='danger'>{errorProduct}</Message>
       ) : (
         <Row className='my-3'>
           <Col md={3}>
@@ -104,11 +121,32 @@ const ProductPage = () => {
                     </Col>
                   </Row>
                 </ListGroup.Item>
+                {product.amountInStock > 0 && (
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Quantity</Col>
+                      <Col>
+                        <FormSelect
+                          value={qty}
+                          onChange={(e) => setQty(e.target.value)}
+                          className='align-self'
+                        >
+                          {[...Array(product.amountInStock).keys()].map((q) => (
+                            <option key={q + 1} value={q + 1}>
+                              {q + 1}
+                            </option>
+                          ))}
+                        </FormSelect>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                )}
                 <ListGroup.Item>
                   <Button
                     className='btn btn-dark col-12 py-2'
                     type='button'
                     disabled={product.amountInStock === 0}
+                    onClick={addToCartHandler}
                   >
                     Add to Cart
                   </Button>

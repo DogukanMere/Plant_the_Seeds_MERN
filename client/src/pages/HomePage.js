@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { listProducts } from '../actions/productActions';
+import { fetchProducts } from '../features/product/productSlice';
 import { Row, Col } from 'react-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -9,19 +9,20 @@ import Product from '../components/Product';
 const HomePage = () => {
   const dispatch = useDispatch();
 
-  const productList = useSelector((state) => state.productList);
-  const { loading, error, products } = productList;
+  const { products, isLoading, errorProducts } = useSelector(
+    (state) => state.products
+  );
 
   useEffect(() => {
-    dispatch(listProducts());
+    dispatch(fetchProducts());
   }, [dispatch]);
   return (
     <>
       <h2 className='fs-2 text-dark'>Listed Products</h2>
-      {loading ? (
+      {isLoading ? (
         <Loader />
-      ) : error ? (
-        <Message variant='danger'>{error}</Message>
+      ) : errorProducts ? (
+        <Message variant='danger'>{errorProducts}</Message>
       ) : (
         <Row>
           {products.map((product) => {

@@ -1,21 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import thunk from 'redux-thunk';
-import {
-  productListReducer,
-  productDetailsReducer,
-} from './reducers/productReducer';
-
-const reducers = {
-  productList: productListReducer,
-  productDetails: productDetailsReducer,
-};
-const initialState = {};
-const middleware = [thunk];
+import productReducer from './features/product/productSlice';
 
 const store = configureStore({
-  reducer: reducers,
-  preloadedState: initialState,
-  middleware: middleware,
+  reducer: {
+    products: productReducer,
+  },
 });
 
 export default store;
