@@ -9,7 +9,7 @@ import {
   Button,
   ListGroupItem,
 } from 'react-bootstrap';
-import { addToCart } from '../features/cart/cartSlice';
+import { addToCart, removeFromCart } from '../features/cart/cartSlice';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import Message from '../components/Message';
 
@@ -30,7 +30,7 @@ const CartPage = () => {
   }, [dispatch, id, qty]);
 
   const removeFromCartHandler = (id) => {
-    console.log('remove');
+    dispatch(removeFromCart(id));
   };
 
   const changeItemQty = (id, qty) => {
