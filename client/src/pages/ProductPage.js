@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { fetchProduct } from '../features/product/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { addToCart } from '../features/cart/cartSlice';
 import {
   Row,
   Col,
@@ -33,6 +34,7 @@ const ProductPage = () => {
   }, [dispatch, id]);
 
   const addToCartHandler = () => {
+    dispatch(addToCart(product._id, qty));
     navigate(`/cart/${id}?qty=${qty}`);
   };
 
