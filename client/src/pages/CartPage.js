@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Row,
@@ -8,35 +8,41 @@ import {
   FormSelect,
   Button,
   ListGroupItem,
+  Card,
 } from 'react-bootstrap';
 import { addToCart, removeFromCart } from '../features/cart/cartSlice';
-import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Message from '../components/Message';
 
 const CartPage = () => {
-  const { id } = useParams();
-  const location = useLocation();
-  const qty = new URLSearchParams(location.search).get('qty');
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
   const { cartItems } = useSelector((store) => store.cart);
 
-  useEffect(() => {
-    if (id) {
-      dispatch(addToCart({ id, qty }));
-    }
-  }, [dispatch, id, qty]);
+  // Take parameters
+  // const { id } = useParams();
+  // const location = useLocation();
+  // const qty = new URLSearchParams(location.search).get('qty');
+
+  // useEffect(() => {
+  //   if (id) {
+  //     dispatch(addToCart({ id, qty }));
+  //   }
+  // }, [dispatch, id, qty]);
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
   };
 
   const changeItemQty = (id, qty) => {
-    console.log(qty);
     dispatch(addToCart({ id, qty }));
     navigate('/cart');
+  };
+
+  const checkoutHandler = () => {
+    console.log('checkout');
   };
 
   return (
@@ -99,8 +105,34 @@ const CartPage = () => {
           </ListGroup>
         )}
       </Col>
-      <Col md={2}></Col>
-      <Col md={2}></Col>
+      <Col md={4}>
+        <Card>
+          <ListGroup variant='flush'>
+            <ListGroupItem>
+              <h3 className='fs-5 fw-bold text-secondary'>
+                Subtotal of (
+                {cartItems.reduce((acc, item) => acc + item.qty, 0)}) items
+              </h3>
+              <strong className='fw-normal fs-5 text-secondary'>
+                $
+                {cartItems
+                  .reduce((acc, item) => acc + item.qty * item.price, 0)
+                  .toFixed(2)}
+              </strong>
+            </ListGroupItem>
+            <ListGroupItem>
+              <Button
+                type='btn'
+                className='btn btn-dark col-12 py-2'
+                disabled={cartItems.length === 0}
+                onClick={checkoutHandler}
+              >
+                Proceed to Checkout
+              </Button>
+            </ListGroupItem>
+          </ListGroup>
+        </Card>
+      </Col>
     </Row>
   );
 };

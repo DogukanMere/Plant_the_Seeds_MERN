@@ -8,7 +8,6 @@ const cartItemsFromLocalStorage = localStorage.getItem('cartItems')
 export const addToCart = createAsyncThunk(
   '/cart/addToCart',
   async (props, thunkAPI) => {
-    console.log(thunkAPI);
     const { id, qty } = props;
     const { data } = await axios.get(`/api/products/${id}`);
     const payload = {
@@ -19,6 +18,12 @@ export const addToCart = createAsyncThunk(
       amountInStock: data.amountInStock,
       qty: Number(qty),
     };
+
+    // Check if manually entered qty  is bigger of smaller than amount in stock
+    //If so set qty to 1 to prevent having bug in the system
+    if (qty > data.amountInStock || qty < 1) {
+      payload.qty = 1;
+    }
 
     return payload;
   }
@@ -43,17 +48,25 @@ const cartSlice = createSlice({
       const existItem = state.cartItems.find((x) => x.product === item.product);
 
       if (existItem) {
-        const newObject = {
+        const existObject = {
           ...state,
           cartItems: state.cartItems.map((x) =>
             x.product === existItem.product ? item : x
           ),
         };
-        localStorage.setItem('cartItems', JSON.stringify(newObject.cartItems));
+        localStorage.setItem(
+          'cartItems',
+          JSON.stringify(existObject.cartItems)
+        );
 
-        return newObject;
+        return existObject;
       } else {
-        return { ...state, cartItems: [...state.cartItems, item] };
+        const newObject = {
+          ...state,
+          cartItems: [...state.cartItems, item],
+        };
+        localStorage.setItem('cartItems', JSON.stringify(newObject.cartItems));
+        return newObject;
       }
     },
   },
