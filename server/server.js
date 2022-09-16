@@ -1,8 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const productsRouter = require('./routes/products');
-const { pageNotFound, errorHandler } = require('./middleware/errorMiddleware');
+const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/userRoutes');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const colors = require('colors');
 
 dotenv.config();
@@ -10,7 +11,7 @@ dotenv.config();
 const app = express();
 
 // Set PORT
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(express.json());
@@ -20,21 +21,18 @@ app.use((req, res, next) => {
 });
 
 // routes
-app.use('/api/products', productsRouter);
+app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
 
 // error handlers
-app.use(pageNotFound);
+app.use(notFound);
 app.use(errorHandler);
 
-// MongoDB connection
 mongoose
   .connect(process.env.MONGO_UI)
   .then(() => {
-    app.listen(
-      PORT,
-      console.log(`Connected to DB | Server running on port ${PORT}.`.cyan.bold)
-    );
+    app.listen(PORT, console.log(`Server running in on port ${PORT}`.yellow));
   })
   .catch((error) => {
-    console.log(`${error}`.red.underline.bold);
+    console.log(error);
   });

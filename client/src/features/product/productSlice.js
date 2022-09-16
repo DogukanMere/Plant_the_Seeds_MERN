@@ -20,7 +20,7 @@ export const fetchProduct = createAsyncThunk(
       const { data } = await axios.get(`/api/products/${props}`);
       return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message);
+      return thunkAPI.rejectWithValue(error.response.data.error);
     }
   }
 );
@@ -41,6 +41,7 @@ const productSlice = createSlice({
     // All Products
     [fetchProducts.pending]: (state) => {
       state.isLoading = true;
+      state.errorProducts = '';
     },
     [fetchProducts.fulfilled]: (state, action) => {
       state.isLoading = false;
@@ -53,6 +54,7 @@ const productSlice = createSlice({
     // Single Product
     [fetchProduct.pending]: (state) => {
       state.isLoading = true;
+      state.errorProduct = '';
     },
     [fetchProduct.fulfilled]: (state, action) => {
       state.isLoading = false;
