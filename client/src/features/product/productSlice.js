@@ -20,7 +20,7 @@ export const fetchProduct = createAsyncThunk(
       const { data } = await axios.get(`/api/products/${props}`);
       return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.error);
+      return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }
 );

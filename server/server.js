@@ -31,7 +31,12 @@ app.use(errorHandler);
 mongoose
   .connect(process.env.MONGO_UI)
   .then(() => {
-    app.listen(PORT, console.log(`Server running in on port ${PORT}`.yellow));
+    app.listen(
+      PORT,
+      console.log(
+        `MongoDB Connected | Server running on port ${PORT}`.cyan.bold
+      )
+    );
   })
   .catch((error) => {
     console.log(error);
