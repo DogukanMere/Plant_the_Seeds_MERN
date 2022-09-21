@@ -8,6 +8,7 @@ import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
               <Route path='/' element={<HomePage />} index />
               <Route path='/login' element={<LoginPage />} />
               <Route path='/register' element={<RegisterPage />} />
+              <Route path='/profile' element={<ProfilePage />} />
               <Route path='/product/:id' element={<ProductPage />} />
               <Route path='/cart'>
                 <Route path=':id' element={<CartPage />} />

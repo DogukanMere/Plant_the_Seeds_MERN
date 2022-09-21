@@ -20,7 +20,9 @@ const RegisterPage = () => {
 
   const dispatch = useDispatch();
 
-  const { loading, userInfo, errorUser } = useSelector((state) => state.user);
+  const { loading, userInfo, errorRegister } = useSelector(
+    (state) => state.user
+  );
 
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
@@ -44,7 +46,7 @@ const RegisterPage = () => {
     <FormContainer>
       <h1>Sign Up</h1>
       {message && <Message variant='danger'>{message}</Message>}
-      {errorUser && <Message variant='danger'>{errorUser}</Message>}
+      {errorRegister && <Message variant='danger'>{errorRegister}</Message>}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='name'>

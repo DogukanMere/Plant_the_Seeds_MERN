@@ -15,7 +15,6 @@ export const loginUser = createAsyncThunk(
         },
       };
       const { email, password } = props;
-      console.log(email, password);
       const { data } = await axios.post(
         '/api/users/login',
         { email, password },
@@ -50,11 +49,38 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const updateUserInfo = createAsyncThunk(
+  '/users/updateUserInfo',
+  async (props, thunkAPI) => {
+    try {
+      const userChangedInfo = props;
+      const { user } = thunkAPI.getState();
+      const { userInfo } = user;
+      const config = {
+        header: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `/api/users/profile`,
+        userChangedInfo,
+        config
+      );
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 const initialState = {
   userInfo: userInfoFromLocalStorage,
-  register: {},
   loading: false,
   errorUser: '',
+  errorRegister: '',
+  errorUpdate: '',
+  success: false,
 };
 
 const userSlice = createSlice({
@@ -85,7 +111,7 @@ const userSlice = createSlice({
     // register User
     [registerUser.pending]: (state) => {
       state.loading = true;
-      state.errorUser = '';
+      state.errorRegister = '';
     },
     [registerUser.fulfilled]: (state, action) => {
       state.loading = false;
@@ -94,7 +120,22 @@ const userSlice = createSlice({
     },
     [registerUser.rejected]: (state, action) => {
       state.loading = false;
-      state.errorUser = action.payload;
+      state.errorRegister = action.payload;
+    },
+
+    // user update Info
+    [updateUserInfo.pending]: (state) => {
+      state.loading = true;
+      state.errorUpdate = '';
+    },
+    [updateUserInfo.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.userInfo = action.payload;
+      state.success = true;
+    },
+    [updateUserInfo.rejected]: (state, action) => {
+      state.loading = false;
+      state.errorUpdate = action.payload;
     },
   },
 });
