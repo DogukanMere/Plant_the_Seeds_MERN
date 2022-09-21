@@ -29,6 +29,10 @@ const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
   const userExist = await User.findOne({ email });
+  if (name.trim() === '') {
+    res.status(400);
+    throw new Error('You must enter a name');
+  }
 
   if (userExist) {
     res.status(400);

@@ -5,12 +5,15 @@ import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { loginUser } from '../features/user/userSlice';
+import { registerUser } from '../features/user/userSlice';
 import FormContainer from '../components/FormContainer';
 
-const LoginPage = () => {
+const RegisterPage = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [message, setMessage] = useState(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,16 +32,31 @@ const LoginPage = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }));
+    if (password !== confirmPassword) {
+      setMessage('Password do not match');
+    } else {
+      setMessage(null);
+      dispatch(registerUser({ name, email, password }));
+    }
   };
 
   return (
     <FormContainer>
-      <h1>Sign In</h1>
+      <h1>Sign Up</h1>
+      {message && <Message variant='danger'>{message}</Message>}
       {errorUser && <Message variant='danger'>{errorUser}</Message>}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
-        <Form.Group controlId='email'>
+        <Form.Group controlId='name'>
+          <Form.Label className='mb-1'>Name</Form.Label>
+          <Form.Control
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            type='name'
+            placeholder='Enter name'
+          ></Form.Control>
+        </Form.Group>
+        <Form.Group controlId='email' className='mt-3'>
           <Form.Label className='mb-1'>Email Address</Form.Label>
           <Form.Control
             value={email}
@@ -56,17 +74,26 @@ const LoginPage = () => {
             placeholder='Enter password'
           ></Form.Control>
         </Form.Group>
+        <Form.Group controlId='confirm password' className='mt-3'>
+          <Form.Label className='mb-1'>Confirm Password</Form.Label>
+          <Form.Control
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            type='password'
+            placeholder='Confirm password'
+          ></Form.Control>
+        </Form.Group>
         <Button type='submit' variant='secondary' className='my-3'>
-          Sign In
+          Register
         </Button>
       </Form>
       <Row className='pw-3'>
         <Col>
-          Don't you have an account? <Link to={'/register'}>Register</Link>{' '}
+          Have an account? <Link to={`/login`}>Login</Link>{' '}
         </Col>
       </Row>
     </FormContainer>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
