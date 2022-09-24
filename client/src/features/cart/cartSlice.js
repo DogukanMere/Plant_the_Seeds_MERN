@@ -36,6 +36,7 @@ export const addToCart = createAsyncThunk(
 const initialState = {
   cartItems: cartItemsFromLocalStorage,
   shippingAddress: shippingAddressLocalStorage,
+  paymentMethod: '',
 };
 
 const cartSlice = createSlice({
@@ -58,6 +59,13 @@ const cartSlice = createSlice({
         JSON.stringify(newObject.shippingAddress)
       );
       return newObject;
+    },
+    savePaymentMethod: (state, action) => {
+      const payment = {
+        ...state,
+        paymentMethod: action.payload,
+      };
+      return payment;
     },
   },
   extraReducers: {
@@ -90,5 +98,6 @@ const cartSlice = createSlice({
   },
 });
 
-export const { removeFromCart, saveShippingAddress } = cartSlice.actions;
+export const { removeFromCart, saveShippingAddress, savePaymentMethod } =
+  cartSlice.actions;
 export default cartSlice.reducer;
