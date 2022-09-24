@@ -5,6 +5,10 @@ const cartItemsFromLocalStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems'))
   : [];
 
+const shippingAddressLocalStorage = localStorage.getItem('shippingAddress')
+  ? JSON.parse(localStorage.getItem('shippingAddress'))
+  : {};
+
 export const addToCart = createAsyncThunk(
   '/cart/addToCart',
   async (props, thunkAPI) => {
@@ -29,7 +33,10 @@ export const addToCart = createAsyncThunk(
   }
 );
 
-const initialState = { cartItems: cartItemsFromLocalStorage };
+const initialState = {
+  cartItems: cartItemsFromLocalStorage,
+  shippingAddress: shippingAddressLocalStorage,
+};
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -40,6 +47,17 @@ const cartSlice = createSlice({
         (x) => x.product !== action.payload
       );
       localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+    },
+    saveShippingAddress: (state, action) => {
+      const newObject = {
+        ...state,
+        shippingAddress: action.payload,
+      };
+      localStorage.setItem(
+        'shippingAddress',
+        JSON.stringify(newObject.shippingAddress)
+      );
+      return newObject;
     },
   },
   extraReducers: {
@@ -72,5 +90,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { removeFromCart } = cartSlice.actions;
+export const { removeFromCart, saveShippingAddress } = cartSlice.actions;
 export default cartSlice.reducer;

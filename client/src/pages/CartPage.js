@@ -42,7 +42,7 @@ const CartPage = () => {
   };
 
   const checkoutHandler = () => {
-    console.log('checkout');
+    navigate('/shipping');
   };
 
   return (
