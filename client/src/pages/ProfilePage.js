@@ -122,6 +122,7 @@ const ProfilePage = () => {
                 <th>TOTAL</th>
                 <th>PAID</th>
                 <th>DELIVERED</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -138,7 +139,9 @@ const ProfilePage = () => {
                         href={`/order/${order._id}`}
                         className='text-decoration-none'
                       >
-                        <Button variant='dark'>Details</Button>
+                        <Button variant='dark' className='btn-sm px-2 py-0'>
+                          Details
+                        </Button>
                       </a>
                     </td>
                   </tr>

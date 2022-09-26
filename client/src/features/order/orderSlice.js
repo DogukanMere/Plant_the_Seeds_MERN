@@ -80,7 +80,13 @@ const initialState = {
 const orderSlice = createSlice({
   name: 'orders',
   initialState,
-  reducers: {},
+  reducers: {
+    removeOrderDetails: (state) => {
+      state.order = {};
+      state.orders = [];
+      state.orderDetails = {};
+    },
+  },
   extraReducers: {
     // Create Order
     [createOrder.pending]: (state) => {
@@ -136,4 +142,5 @@ const orderSlice = createSlice({
   },
 });
 
+export const { removeOrderDetails } = orderSlice.actions;
 export default orderSlice.reducer;

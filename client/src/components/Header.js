@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Nav, Navbar, Container, NavDropdown } from 'react-bootstrap';
 import { logoutUser } from '../features/user/userSlice';
+import { removeOrderDetails } from '../features/order/orderSlice';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Header = () => {
 
   const logoutHandler = () => {
     dispatch(logoutUser());
+    dispatch(removeOrderDetails());
     navigate('/login');
   };
 
