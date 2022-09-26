@@ -12,6 +12,7 @@ import ProfilePage from './pages/ProfilePage';
 import ShippingPage from './pages/ShippingPage';
 import PaymentPage from './pages/PaymentPage';
 import PlaceOrderPage from './pages/PlaceOrderPage';
+import OrderPage from './pages/OrderPage';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <main className='py-4'>
           <Container>
             <Routes>
+              <Route path='/order/:id' element={<OrderPage />} />
               <Route path='/placeorder' element={<PlaceOrderPage />} />
               <Route path='/payment' element={<PaymentPage />} />
               <Route path='/shipping' element={<ShippingPage />} />
