@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button, Row, Card, Col, ListGroup, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,9 +12,7 @@ function PlaceOrderPage() {
   const { cartItems, shippingAddress, paymentMethod } = useSelector(
     (state) => state.cart
   );
-  const { order, success, error, loadingOrder } = useSelector(
-    (state) => state.order
-  );
+  const { order, success, error } = useSelector((state) => state.order);
 
   const { userInfo } = useSelector((state) => state.user);
   const userId = userInfo._id;
@@ -32,8 +30,7 @@ function PlaceOrderPage() {
 
   useEffect(() => {
     if (success) {
-      // eslint-disable-next-line
-      // navigate(`/order/${order._id}`);
+      navigate(`/order/${order._id}`);
     }
   }, [navigate, success]);
 

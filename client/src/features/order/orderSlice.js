@@ -38,14 +38,17 @@ const orderSlice = createSlice({
     [createOrder.pending]: (state) => {
       state.loadingOrder = true;
       state.error = '';
+      state.success = false;
     },
     [createOrder.fulfilled]: (state, action) => {
       state.loadingOrder = false;
       state.order = action.payload;
+      state.success = true;
     },
     [createOrder.rejected]: (state, action) => {
       state.loadingOrder = false;
       state.error = action.payload;
+      state.success = false;
     },
   },
 });
