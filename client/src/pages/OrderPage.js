@@ -9,18 +9,14 @@ import { useEffect } from 'react';
 
 function OrderPage() {
   const { id } = useParams();
-
+  const dispatch = useDispatch();
   const { orderDetails, loadingOrder, error } = useSelector(
     (state) => state.order
   );
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    if (!orderDetails || orderDetails._id !== id) {
-      dispatch(getOrderDetails(id));
-    }
-  }, [dispatch, orderDetails, id]);
+    dispatch(getOrderDetails(id));
+  }, [dispatch, id]);
 
   return loadingOrder ? (
     <Loader />

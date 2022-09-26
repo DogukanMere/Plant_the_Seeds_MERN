@@ -44,7 +44,7 @@ const getOrderById = asyncHandler(async (req, res) => {
     'user',
     'name email'
   );
-
+  console.log(req.params.id);
   if (order) {
     res.json(order);
   } else {
@@ -53,4 +53,12 @@ const getOrderById = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { addOrderItems, getOrderById };
+// GET - /api/orders/orderlist
+// Get get authorized user orders| Private
+const getOrderList = asyncHandler(async (req, res) => {
+  const orders = await Order.find({ user: req.user._id });
+
+  res.json(orders);
+});
+
+module.exports = { addOrderItems, getOrderById, getOrderList };

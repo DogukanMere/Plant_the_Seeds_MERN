@@ -20,17 +20,7 @@ const CartPage = () => {
   const dispatch = useDispatch();
 
   const { cartItems } = useSelector((store) => store.cart);
-
-  // Take parameters
-  // const { id } = useParams();
-  // const location = useLocation();
-  // const qty = new URLSearchParams(location.search).get('qty');
-
-  // useEffect(() => {
-  //   if (id) {
-  //     dispatch(addToCart({ id, qty }));
-  //   }
-  // }, [dispatch, id, qty]);
+  const { userInfo } = useSelector((store) => store.user);
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
@@ -42,7 +32,11 @@ const CartPage = () => {
   };
 
   const checkoutHandler = () => {
-    navigate('/shipping');
+    if (!userInfo) {
+      navigate('/login');
+    } else {
+      navigate('/shipping');
+    }
   };
 
   return (
