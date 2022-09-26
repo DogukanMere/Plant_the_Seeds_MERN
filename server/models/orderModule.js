@@ -27,15 +27,25 @@ const orderSchema = mongoose.Schema(
       state: { type: String, require: true },
       country: { type: String, required: true },
     },
-    taxCost: {
+    taxPrice: {
       type: Number,
       required: true,
       default: 0.0,
     },
-    totalCost: {
+    shippingPrice: {
       type: Number,
       required: true,
       default: 0.0,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    paymentMethod: {
+      type: String,
+      required: true,
+      default: false,
     },
     isReady: {
       type: String,

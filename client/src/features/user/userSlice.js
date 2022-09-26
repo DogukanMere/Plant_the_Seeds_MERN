@@ -10,7 +10,7 @@ export const loginUser = createAsyncThunk(
   async (props, thunkAPI) => {
     try {
       const config = {
-        header: {
+        headers: {
           'Content-Type': 'application/json',
         },
       };
@@ -32,7 +32,7 @@ export const registerUser = createAsyncThunk(
   async (props, thunkAPI) => {
     try {
       const config = {
-        header: {
+        headers: {
           'Content-Type': 'application/json',
         },
       };
@@ -57,7 +57,7 @@ export const updateUserInfo = createAsyncThunk(
       const { user } = thunkAPI.getState();
       const { userInfo } = user;
       const config = {
-        header: {
+        headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userInfo.token}`,
         },
@@ -132,6 +132,7 @@ const userSlice = createSlice({
       state.loading = false;
       state.userInfo = action.payload;
       state.success = true;
+      localStorage.setItem('userInfo', JSON.stringify(state.userInfo));
     },
     [updateUserInfo.rejected]: (state, action) => {
       state.loading = false;

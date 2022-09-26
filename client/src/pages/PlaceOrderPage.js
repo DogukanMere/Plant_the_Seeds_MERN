@@ -4,12 +4,20 @@ import { Button, Row, Card, Col, ListGroup, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import CheckoutSteps from '../components/CheckoutSteps';
 import Message from '../components/Message';
+import { createOrder } from '../features/order/orderSlice';
+import { useEffect } from 'react';
 
 function PlaceOrderPage() {
   const navigate = useNavigate();
   const { cartItems, shippingAddress, paymentMethod } = useSelector(
     (state) => state.cart
   );
+  const { order, success, error, loadingOrder } = useSelector(
+    (state) => state.order
+  );
+
+  const { userInfo } = useSelector((state) => state.user);
+  const userId = userInfo._id;
 
   // Price Calculation
   const itemsTotal = cartItems.reduce(
@@ -22,8 +30,26 @@ function PlaceOrderPage() {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (success) {
+      // eslint-disable-next-line
+      // navigate(`/order/${order._id}`);
+    }
+  }, [navigate, success]);
+
   const placeOrderHandler = () => {
-    console.log('order placed');
+    dispatch(
+      createOrder({
+        orderComponents: cartItems,
+        userInfo: userId,
+        shippingAddress: shippingAddress,
+        paymentMethod: paymentMethod,
+        itemsPrice: itemsTotal,
+        shippingPrice: shippingPrice,
+        taxPrice: taxPrice,
+        totalPrice: totalPrice,
+      })
+    );
   };
   return (
     <>
@@ -115,6 +141,9 @@ function PlaceOrderPage() {
                   <Col>Total</Col>
                   <Col>${totalPrice}</Col>
                 </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                {error && <Message variant='danger'>{error}</Message>}
               </ListGroup.Item>
               <ListGroup.Item>
                 <Button
