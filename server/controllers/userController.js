@@ -95,4 +95,88 @@ const updateProfile = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { userAuth, registerUser, getProfile, updateProfile };
+// ADMIN
+
+// GET - /api/users/info
+// Get user profile | Private/admin
+const getUserInfo = asyncHandler(async (req, res) => {
+  const { id } = req.body;
+  const userInfo = await User.findById(id);
+
+  if (userInfo) {
+    res.status(200).json(userInfo);
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+// GET - /api/users/
+// Get all users | Private/Admin
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
+// GET - /api/users/:id
+// Get specific user | Private/Admin
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select('-password');
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+// DELETE - /api/users/:id
+// Delete user | Private/Admin
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    await user.remove();
+    res.json({ message: 'User successfully removed' });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+// PUT - /api/users/:id
+// Update user profile | Private/Admin
+
+const updateUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.isAdmin = req.body.isAdmin;
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+module.exports = {
+  userAuth,
+  registerUser,
+  getProfile,
+  updateProfile,
+  getUsers,
+  deleteUser,
+  getUserById,
+  updateUserById,
+  getUserInfo,
+};

@@ -13,6 +13,8 @@ import ShippingPage from './pages/ShippingPage';
 import PaymentPage from './pages/PaymentPage';
 import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderPage from './pages/OrderPage';
+import ListUsersPage from './pages/ListUsersPage';
+import UserEditPage from './pages/UserEditPage';
 
 const App = () => {
   return (
@@ -34,6 +36,8 @@ const App = () => {
                 <Route path=':id' element={<CartPage />} />
                 <Route path='' element={<CartPage />} />
               </Route>
+              <Route path='/admin/userList' element={<ListUsersPage />} />
+              <Route path='/admin/user/:id/edit' element={<UserEditPage />} />
               <Route path='/' element={<HomePage />} index />
             </Routes>
           </Container>

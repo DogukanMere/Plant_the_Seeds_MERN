@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// Get user information from local storage if available
 const userInfoFromLocalStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
   : null;
 
+// Login user
 export const loginUser = createAsyncThunk(
   '/users/loginUser',
   async (props, thunkAPI) => {
@@ -27,6 +29,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// Register a new user
 export const registerUser = createAsyncThunk(
   '/users/registerUser',
   async (props, thunkAPI) => {
@@ -49,6 +52,7 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// Update user information
 export const updateUserInfo = createAsyncThunk(
   '/users/updateUserInfo',
   async (props, thunkAPI) => {
@@ -74,7 +78,84 @@ export const updateUserInfo = createAsyncThunk(
   }
 );
 
+////////////
+// ADMIN ///
+////////////
+
+// get user info (for admin)
+export const getUserInfo = createAsyncThunk(
+  '/users/getUserInfo',
+  async (props, thunkAPI) => {
+    try {
+      const id = props;
+      const { user } = thunkAPI.getState();
+      const { userInfo } = user;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.post('/api/users/info', { id }, config);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+// Get all users
+export const listUsers = createAsyncThunk(
+  '/users/listUsers',
+  async (props, thunkAPI) => {
+    try {
+      const { user } = thunkAPI.getState();
+      const { userInfo } = user;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get('/api/users', config);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+// Delete user
+export const deleteUser = createAsyncThunk(
+  '/users/deleteUser',
+  async (props, thunkAPI) => {
+    try {
+      const id = props;
+      const { user } = thunkAPI.getState();
+      const { userInfo } = user;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      return await axios.delete(`/api/users/${id}`, config);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+// Initial states for user store
 const initialState = {
+  // Admin variables
+  users: [],
+  loadingUsers: false,
+  errorUsers: '',
+  loadingDelete: false,
+  errorDelete: '',
+  userForAdmin: {},
+
+  // User variables
   userInfo: userInfoFromLocalStorage,
   loading: false,
   errorUser: '',
@@ -87,6 +168,7 @@ const userSlice = createSlice({
   name: 'userInfo',
   initialState,
   reducers: {
+    // Log out user and delete information from both local storage and redux store
     logoutUser: (state, action) => {
       localStorage.removeItem('userInfo');
       state.userInfo = null;
@@ -137,6 +219,52 @@ const userSlice = createSlice({
     [updateUserInfo.rejected]: (state, action) => {
       state.loading = false;
       state.errorUpdate = action.payload;
+    },
+
+    ////////////
+    // ADMIN ///
+    ////////////
+
+    // get User for Admins
+    [getUserInfo.pending]: (state) => {
+      state.loading = true;
+      state.errorUser = '';
+    },
+    [getUserInfo.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.userForAdmin = action.payload;
+    },
+    [getUserInfo.rejected]: (state, action) => {
+      state.loading = false;
+      state.errorUser = action.payload;
+    },
+
+    // get all Users
+    [listUsers.pending]: (state) => {
+      state.loadingUsers = true;
+      state.errorUsers = '';
+    },
+    [listUsers.fulfilled]: (state, action) => {
+      state.loadingUsers = false;
+      state.users = action.payload;
+    },
+    [listUsers.rejected]: (state, action) => {
+      state.loadingUsers = false;
+      state.errorUsers = action.payload;
+    },
+
+    // delete User
+    [deleteUser.pending]: (state) => {
+      state.loadingDelete = true;
+      state.errorDelete = '';
+    },
+    [deleteUser.fulfilled]: (state, action) => {
+      state.loadingDelete = false;
+      state.success = true;
+    },
+    [deleteUser.rejected]: (state, action) => {
+      state.loadingDelete = false;
+      state.errorDelete = action.payload;
     },
   },
 });
