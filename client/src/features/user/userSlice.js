@@ -145,6 +145,32 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
+// Update user / Admin
+export const updateUserByAdmin = createAsyncThunk(
+  '/users/updateUserByAdmin',
+  async (props, thunkAPI) => {
+    try {
+      const userNewInfo = props;
+      const { user } = thunkAPI.getState();
+      const { userInfo, userForAdmin } = user;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `/api/users/${userForAdmin._id}`,
+        userNewInfo,
+        config
+      );
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 // Initial states for user store
 const initialState = {
   // Admin variables
@@ -154,13 +180,15 @@ const initialState = {
   loadingDelete: false,
   errorDelete: '',
   userForAdmin: {},
+  loadingUpdate: false,
+  successUpdate: false,
+  errorUpdateAdmin: '',
 
   // User variables
   userInfo: userInfoFromLocalStorage,
   loading: false,
   errorUser: '',
   errorRegister: '',
-  errorUpdate: '',
   success: false,
 };
 
@@ -243,6 +271,8 @@ const userSlice = createSlice({
     [listUsers.pending]: (state) => {
       state.loadingUsers = true;
       state.errorUsers = '';
+      state.errorUpdateAdmin = '';
+      state.successUpdate = false;
     },
     [listUsers.fulfilled]: (state, action) => {
       state.loadingUsers = false;
@@ -265,6 +295,21 @@ const userSlice = createSlice({
     [deleteUser.rejected]: (state, action) => {
       state.loadingDelete = false;
       state.errorDelete = action.payload;
+    },
+
+    // update User
+    [updateUserByAdmin.pending]: (state) => {
+      state.loadingUpdate = true;
+      state.errorUpdateAdmin = '';
+    },
+    [updateUserByAdmin.fulfilled]: (state, action) => {
+      state.loadingUpdate = false;
+      state.userForAdmin = action.payload;
+      state.successUpdate = true;
+    },
+    [updateUserByAdmin.rejected]: (state, action) => {
+      state.loadingUpdate = false;
+      state.errorUpdateAdmin = action.payload;
     },
   },
 });

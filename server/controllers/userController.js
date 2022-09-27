@@ -155,13 +155,13 @@ const updateUserById = asyncHandler(async (req, res) => {
     user.email = req.body.email || user.email;
     user.isAdmin = req.body.isAdmin;
 
-    const updatedUser = await user.save();
+    const updatedUserByAdmin = await user.save();
 
     res.status(200).json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
+      _id: updatedUserByAdmin._id,
+      name: updatedUserByAdmin.name,
+      email: updatedUserByAdmin.email,
+      isAdmin: updatedUserByAdmin.isAdmin,
     });
   } else {
     res.status(404);
