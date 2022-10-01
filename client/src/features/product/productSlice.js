@@ -29,7 +29,29 @@ export const fetchProduct = createAsyncThunk(
 //ADMIN//
 /////////
 
-// Delete user
+// Create product
+export const addProduct = createAsyncThunk(
+  '/products/addProduct',
+  async (props, thunkAPI) => {
+    try {
+      const { user } = thunkAPI.getState();
+      const { userInfo } = user;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      // const { name, price, description, availableInStock, image } = props;
+      const { data } = await axios.post('/api/products', {}, config);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+// Delete product
 export const deleteProduct = createAsyncThunk(
   '/products/deleteProduct',
   async (props, thunkAPI) => {
@@ -49,11 +71,18 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+// Update product
+
 const initialState = {
   // Admin variables
   loadingDelete: false,
   errorDelete: '',
   successDelete: false,
+  productAdded: {},
+  successCreate: false,
+  errorCreate: '',
+  loadingCreate: false,
+
   // User variables
   products: [],
   product: {},
@@ -88,6 +117,7 @@ const productSlice = createSlice({
     [fetchProduct.fulfilled]: (state, action) => {
       state.isLoading = false;
       state.product = action.payload;
+      state.successCreate = true;
     },
     [fetchProduct.rejected]: (state, action) => {
       state.isLoading = false;
@@ -97,6 +127,22 @@ const productSlice = createSlice({
     /////////
     //ADMIN//
     /////////
+
+    // Create Product
+    // POST - /api/products
+    [addProduct.pending]: (state) => {
+      state.loadingCreate = true;
+      state.errorCreate = '';
+    },
+    [addProduct.fulfilled]: (state, action) => {
+      state.loadingCreate = false;
+      state.productAdded = action.payload;
+      state.successCreate = true;
+    },
+    [addProduct.rejected]: (state, action) => {
+      state.loadingCreate = false;
+      state.errorCreate = action.payload;
+    },
 
     // Delete single product
     // DELETE - /api/products/:id

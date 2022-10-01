@@ -23,7 +23,22 @@ const getProduct = asyncHandler(async (req, res) => {
 });
 
 // POST - /api/products/
-// Add a new data to Db
+// Add a new product to Db
+const createProduct = asyncHandler(async (req, res) => {
+  const product = new Product({
+    name: 'Sample name',
+    price: 0,
+    user: req.user._id,
+    image: '/images/sample.jpeg',
+    availableInStock: 0,
+    description: 'sample description',
+    growTime: 90,
+    yield: '5-10 days',
+  });
+
+  const newProduct = await product.save();
+  res.status(201).json(newProduct);
+});
 
 // DELETE - /api/products/:id
 // Delete a data from Db - Private-Admin
@@ -38,11 +53,31 @@ const deleteProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// PATCH - /api/products/:id
-// Update a data in Db
+// PUT - /api/products/:id
+// Update a product in Db
+const updateProduct = asyncHandler(async (req, res) => {
+  const { name, price, description, image, availableInStock } = req.body;
+
+  const product = await Product.findById(req.params.id);
+
+  if (product) {
+    product.name = name;
+    product.price = price;
+    product.description = description;
+    product.image = image;
+    product.availableInStock = availableInStock;
+    const updatedProduct = await product.save();
+    res.json(updatedProduct);
+  } else {
+    res.status(404);
+    throw new Error('Product not found!');
+  }
+});
 
 module.exports = {
   getProducts,
   getProduct,
   deleteProduct,
+  createProduct,
+  updateProduct,
 };

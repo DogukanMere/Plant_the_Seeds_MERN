@@ -5,7 +5,11 @@ import { Table, Button, Col, Row } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { fetchProducts, deleteProduct } from '../features/product/productSlice';
+import {
+  fetchProducts,
+  deleteProduct,
+  addProduct,
+} from '../features/product/productSlice';
 
 const ListProductsPage = () => {
   const dispatch = useDispatch();
@@ -18,20 +22,35 @@ const ListProductsPage = () => {
     successDelete,
     errorDelete,
     loadingDelete,
+    successCreate,
+    errorCreate,
+    loadingCreate,
+    productAdded,
   } = useSelector((state) => state.products);
 
   const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(fetchProducts());
-    } else {
+    if (!userInfo.isAdmin) {
       navigate('/login');
     }
-  }, [dispatch, navigate, userInfo, successDelete]);
+
+    if (successCreate) {
+      navigate(`/admin/product/${productAdded._id}/edit`);
+    } else {
+      dispatch(fetchProducts());
+    }
+  }, [
+    dispatch,
+    navigate,
+    userInfo,
+    successDelete,
+    successCreate,
+    productAdded,
+  ]);
 
   const addProductHandler = () => {
-    console.log('add product');
+    dispatch(addProduct());
   };
 
   const deleteHandler = (id) => {
@@ -50,6 +69,8 @@ const ListProductsPage = () => {
       </Row>
       {loadingDelete && <Loader />}
       {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+      {loadingCreate && <Loader />}
+      {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
       {isLoading ? (
         <Loader />
       ) : errorProducts ? (
