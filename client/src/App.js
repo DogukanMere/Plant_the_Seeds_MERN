@@ -15,6 +15,7 @@ import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderPage from './pages/OrderPage';
 import ListUsersPage from './pages/ListUsersPage';
 import UserEditPage from './pages/UserEditPage';
+import ListProductsPage from './pages/ListProductsPage';
 
 const App = () => {
   return (
@@ -36,8 +37,9 @@ const App = () => {
                 <Route path=':id' element={<CartPage />} />
                 <Route path='' element={<CartPage />} />
               </Route>
-              <Route path='/admin/userList' element={<ListUsersPage />} />
+              <Route path='/admin/userllist' element={<ListUsersPage />} />
               <Route path='/admin/user/:id/edit' element={<UserEditPage />} />
+              <Route path='/admin/productlist' element={<ListProductsPage />} />
               <Route path='/' element={<HomePage />} index />
             </Routes>
           </Container>

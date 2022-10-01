@@ -25,7 +25,36 @@ export const fetchProduct = createAsyncThunk(
   }
 );
 
+/////////
+//ADMIN//
+/////////
+
+// Delete user
+export const deleteProduct = createAsyncThunk(
+  '/products/deleteProduct',
+  async (props, thunkAPI) => {
+    try {
+      const id = props;
+      const { user } = thunkAPI.getState();
+      const { userInfo } = user;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      return await axios.delete(`/api/products/${id}`, config);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 const initialState = {
+  // Admin variables
+  loadingDelete: false,
+  errorDelete: '',
+  successDelete: false,
+  // User variables
   products: [],
   product: {},
   isLoading: true,
@@ -63,6 +92,25 @@ const productSlice = createSlice({
     [fetchProduct.rejected]: (state, action) => {
       state.isLoading = false;
       state.errorProduct = action.payload;
+    },
+
+    /////////
+    //ADMIN//
+    /////////
+
+    // Delete single product
+    // DELETE - /api/products/:id
+    [deleteProduct.pending]: (state) => {
+      state.loadingDelete = true;
+      state.errorDelete = '';
+    },
+    [deleteProduct.fulfilled]: (state, action) => {
+      state.loadingDelete = false;
+      state.successDelete = true;
+    },
+    [deleteProduct.rejected]: (state, action) => {
+      state.loadingDelete = false;
+      state.errorDelete = action.payload;
     },
   },
 });

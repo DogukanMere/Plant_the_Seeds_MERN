@@ -26,7 +26,17 @@ const getProduct = asyncHandler(async (req, res) => {
 // Add a new data to Db
 
 // DELETE - /api/products/:id
-// Delete a data from Db
+// Delete a data from Db - Private-Admin
+const deleteProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    await product.remove();
+    res.json({ message: 'Product successfully deleted' });
+  } else {
+    res.status(404);
+    throw new Error('Product not found!');
+  }
+});
 
 // PATCH - /api/products/:id
 // Update a data in Db
@@ -34,4 +44,5 @@ const getProduct = asyncHandler(async (req, res) => {
 module.exports = {
   getProducts,
   getProduct,
+  deleteProduct,
 };

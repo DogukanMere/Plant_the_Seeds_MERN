@@ -80,7 +80,7 @@ const ListUsersPage = () => {
                     </LinkContainer>
                     <Button
                       variant='danger'
-                      className='btn-sm ms-2'
+                      className='btn-sm'
                       onClick={() => deleteHandler(user._id)}
                     >
                       <i className='fas fa-trash'></i>
