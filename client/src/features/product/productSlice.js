@@ -100,6 +100,7 @@ const productSlice = createSlice({
     [fetchProducts.pending]: (state) => {
       state.isLoading = true;
       state.errorProducts = '';
+      state.errorDelete = '';
     },
     [fetchProducts.fulfilled]: (state, action) => {
       state.isLoading = false;
@@ -117,7 +118,7 @@ const productSlice = createSlice({
     [fetchProduct.fulfilled]: (state, action) => {
       state.isLoading = false;
       state.product = action.payload;
-      state.successCreate = true;
+      state.successCreate = false;
     },
     [fetchProduct.rejected]: (state, action) => {
       state.isLoading = false;

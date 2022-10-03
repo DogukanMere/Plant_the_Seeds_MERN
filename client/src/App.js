@@ -16,6 +16,7 @@ import OrderPage from './pages/OrderPage';
 import ListUsersPage from './pages/ListUsersPage';
 import UserEditPage from './pages/UserEditPage';
 import ListProductsPage from './pages/ListProductsPage';
+import ProductEditPage from './pages/ProductEditPage';
 
 const App = () => {
   return (
@@ -40,6 +41,10 @@ const App = () => {
               <Route path='/admin/userlist' element={<ListUsersPage />} />
               <Route path='/admin/user/:id/edit' element={<UserEditPage />} />
               <Route path='/admin/productlist' element={<ListProductsPage />} />
+              <Route
+                path='/admin/product/:id/edit'
+                element={<ProductEditPage />}
+              />
               <Route path='/' element={<HomePage />} index />
             </Routes>
           </Container>
