@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// Fetch all products from db
 export const fetchProducts = createAsyncThunk(
   '/products/fetchProducts',
   async (props, thunkAPI) => {
@@ -13,6 +14,7 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+// Fetch single product from db
 export const fetchProduct = createAsyncThunk(
   '/products/fetchProduct',
   async (props, thunkAPI) => {
@@ -29,7 +31,7 @@ export const fetchProduct = createAsyncThunk(
 //ADMIN//
 /////////
 
-// Create product
+// Create product / Admin
 export const addProduct = createAsyncThunk(
   '/products/addProduct',
   async (props, thunkAPI) => {
@@ -51,7 +53,7 @@ export const addProduct = createAsyncThunk(
   }
 );
 
-// Delete product
+// Delete product / Admin
 export const deleteProduct = createAsyncThunk(
   '/products/deleteProduct',
   async (props, thunkAPI) => {
@@ -71,7 +73,32 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
-// Update product
+// Update product / Admin
+export const updateProductByAdmin = createAsyncThunk(
+  '/users/updateProductByAdmin',
+  async (props, thunkAPI) => {
+    try {
+      const productUpdateInfo = props;
+      const { user, products } = thunkAPI.getState();
+      const { userInfo } = user;
+      const { product } = products;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `/api/products/${product._id}`,
+        productUpdateInfo,
+        config
+      );
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
 const initialState = {
   // Admin variables
@@ -82,6 +109,9 @@ const initialState = {
   successCreate: false,
   errorCreate: '',
   loadingCreate: false,
+  errorUpdate: '',
+  successUpdate: false,
+  loadingUpdate: false,
 
   // User variables
   products: [],
@@ -94,13 +124,18 @@ const initialState = {
 const productSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    resetDeleteSuccess: (state) => {
+      state.successDelete = false;
+    },
+  },
   extraReducers: {
     // All Products
     [fetchProducts.pending]: (state) => {
       state.isLoading = true;
       state.errorProducts = '';
       state.errorDelete = '';
+      state.successUpdate = false;
     },
     [fetchProducts.fulfilled]: (state, action) => {
       state.isLoading = false;
@@ -159,7 +194,24 @@ const productSlice = createSlice({
       state.loadingDelete = false;
       state.errorDelete = action.payload;
     },
+    // Update a product
+    // PUT - /api/products/:id
+    [updateProductByAdmin.pending]: (state) => {
+      state.loadingUpdate = true;
+      state.errorUpdate = '';
+      state.successUpdate = false;
+    },
+    [updateProductByAdmin.fulfilled]: (state, action) => {
+      state.loadingUpdate = false;
+      state.successUpdate = true;
+      state.product = action.payload;
+    },
+    [updateProductByAdmin.rejected]: (state, action) => {
+      state.loadingUpdate = false;
+      state.errorUpdate = action.payload;
+    },
   },
 });
 
+export const { resetDeleteSuccess } = productSlice.actions;
 export default productSlice.reducer;

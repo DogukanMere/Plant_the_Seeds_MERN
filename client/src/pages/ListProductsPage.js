@@ -9,6 +9,7 @@ import {
   fetchProducts,
   deleteProduct,
   addProduct,
+  resetDeleteSuccess,
 } from '../features/product/productSlice';
 
 const ListProductsPage = () => {
@@ -31,6 +32,10 @@ const ListProductsPage = () => {
   const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
+    if (successDelete) {
+      dispatch(resetDeleteSuccess());
+      navigate('/admin/productlist');
+    }
     if (!userInfo.isAdmin) {
       navigate('/login');
     }

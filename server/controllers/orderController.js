@@ -20,7 +20,6 @@ const addOrderItems = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('There is no item to order');
   } else {
-    console.log(req);
     const order = new Order({
       orderComponents,
       user: req.user._id,
@@ -44,7 +43,6 @@ const getOrderById = asyncHandler(async (req, res) => {
     'user',
     'name email'
   );
-  console.log(req.params.id);
   if (order) {
     res.json(order);
   } else {
@@ -54,7 +52,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 });
 
 // GET - /api/orders/orderlist
-// Get get authorized user orders| Private
+// Get logged in user orders| Private
 const getOrderList = asyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user._id });
 

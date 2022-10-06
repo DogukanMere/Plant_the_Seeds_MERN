@@ -4,7 +4,10 @@ import { Form, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { fetchProduct } from '../features/product/productSlice';
+import {
+  fetchProduct,
+  updateProductByAdmin,
+} from '../features/product/productSlice';
 import FormContainer from '../components/FormContainer';
 import { Link } from 'react-router-dom';
 
@@ -22,25 +25,42 @@ const ProductEditPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { product, loading, error } = useSelector((state) => state.products);
+  const { product, loading, error, errorUpdate, loadingUpdate, successUpdate } =
+    useSelector((state) => state.products);
 
   useEffect(() => {
-    if (!product.name || product._id !== productId) {
-      dispatch(fetchProduct(productId));
+    if (successUpdate) {
+      // dispatch(resetUpdateProduct());
+      navigate('/admin/productlist');
     } else {
-      setName(product.name);
-      setPrice(product.price);
-      setAmountInStock(product.amountInStock);
-      setDescription(product.description);
-      setGrowTime(product.growTime);
-      setYieldProduct(product.yield);
-      setImage(product.image);
+      if (!product.name || product._id !== productId) {
+        dispatch(fetchProduct(productId));
+      } else {
+        setName(product.name);
+        setPrice(product.price);
+        setAmountInStock(product.amountInStock);
+        setDescription(product.description);
+        setGrowTime(product.growTime);
+        setYieldProduct(product.yield);
+        setImage(product.image);
+      }
     }
-  }, [dispatch, navigate, productId, product]);
+  }, [dispatch, navigate, productId, product, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log('update');
+    dispatch(
+      updateProductByAdmin({
+        _id: productId,
+        name,
+        price,
+        image,
+        amountInStock,
+        description,
+        yield: yieldProduct,
+        growTime,
+      })
+    );
   };
 
   return (
@@ -50,6 +70,8 @@ const ProductEditPage = () => {
       </Link>
       <FormContainer>
         <h1>Edit Product</h1>
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (

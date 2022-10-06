@@ -33,7 +33,7 @@ const createProduct = asyncHandler(async (req, res) => {
     availableInStock: 0,
     description: 'sample description',
     growTime: 90,
-    yield: '5-10 days',
+    yield: '5-10',
   });
 
   const newProduct = await product.save();
@@ -56,7 +56,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // PUT - /api/products/:id
 // Update a product in Db
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, availableInStock } = req.body;
+  const { name, price, description, image, amountInStock, yield, growTime } =
+    req.body;
 
   const product = await Product.findById(req.params.id);
 
@@ -65,8 +66,12 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.price = price;
     product.description = description;
     product.image = image;
-    product.availableInStock = availableInStock;
+    product.amountInStock = amountInStock;
+    product.growTime = growTime;
+    product.yield = yield;
+
     const updatedProduct = await product.save();
+
     res.json(updatedProduct);
   } else {
     res.status(404);
