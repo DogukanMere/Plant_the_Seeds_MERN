@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import {
@@ -19,6 +20,7 @@ const ProductEditPage = () => {
   const [description, setDescription] = useState('');
   const [growTime, setGrowTime] = useState(0);
   const [yieldProduct, setYieldProduct] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const { id: productId } = useParams();
 
@@ -46,6 +48,29 @@ const ProductEditPage = () => {
       }
     }
   }, [dispatch, navigate, productId, product, successUpdate]);
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploading(true);
+
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
+      const { data } = await axios.post('/api/upload', formData, config);
+
+      setImage(data);
+      setUploading(false);
+    } catch (error) {
+      console.error(error);
+      setUploading(false);
+    }
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -104,6 +129,14 @@ const ProductEditPage = () => {
                 type='text'
                 placeholder='Enter image url'
               ></Form.Control>
+              <input
+                type='file'
+                id='image-file'
+                label='Choose file'
+                custom
+                onChange={uploadFileHandler}
+              />
+              {uploading && <Loader />}
             </Form.Group>
             <Form.Group controlId='description' className='mt-3'>
               <Form.Label className='mb-1'>Description</Form.Label>
