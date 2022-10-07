@@ -1,19 +1,29 @@
 import React from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Row, Card, Col, ListGroup, Image } from 'react-bootstrap';
+import { Row, Card, Col, ListGroup, Image, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { getOrderDetails } from '../features/order/orderSlice';
+import {
+  getOrderDetails,
+  setOrderDelivered,
+  setOrderPaid,
+} from '../features/order/orderSlice';
 import { useEffect } from 'react';
 
 function OrderPage() {
   const navigate = useNavigate();
   const { id: orderId } = useParams();
   const dispatch = useDispatch();
-  const { orderDetails, loadingOrder, error } = useSelector(
-    (state) => state.order
-  );
+  const {
+    orderDetails,
+    loadingOrder,
+    error,
+    errorDeliver,
+    errorPayment,
+    successDeliver,
+    successPayment,
+  } = useSelector((state) => state.order);
   const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -22,7 +32,15 @@ function OrderPage() {
     } else {
       navigate('/login');
     }
-  }, [dispatch, navigate, userInfo, orderId]);
+  }, [dispatch, navigate, userInfo, orderId, successDeliver, successPayment]);
+
+  const deliverHandler = (id) => {
+    dispatch(setOrderDelivered(id));
+  };
+
+  const paymentHandler = (id) => {
+    dispatch(setOrderPaid(id));
+  };
 
   return loadingOrder ? (
     <Loader />
@@ -36,12 +54,14 @@ function OrderPage() {
           <ListGroup variant='flush'>
             <ListGroup.Item>
               <h2>Details</h2>
-              <p>{/* <strong>Name: </strong> {orderDetails.user.name} */}</p>
+              <p>
+                <strong>Name: </strong> {orderDetails.user.name}
+              </p>
               <p>
                 <strong>Email: </strong>
-                {/* <a href={`mailto:${orderDetails.user.email}`}>
+                <a href={`mailto:${orderDetails.user.email}`}>
                   {orderDetails.user.email}
-                </a> */}
+                </a>
               </p>
             </ListGroup.Item>
             <ListGroup.Item>
@@ -57,7 +77,7 @@ function OrderPage() {
                   {orderDetails.shippingAddress.country},
                 </span>
               </p>
-              {orderDetails.isDelireved ? (
+              {orderDetails.isDelivered ? (
                 <Message variant='success'>
                   Your order has successfully been sent
                 </Message>
@@ -149,6 +169,38 @@ function OrderPage() {
                   <Col>${orderDetails.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
+              {errorDeliver ? (
+                <Message variant='warning'>{errorDeliver}</Message>
+              ) : (
+                userInfo.isAdmin &&
+                !orderDetails.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn btn-info col-12'
+                      onClick={() => deliverHandler(orderDetails._id)}
+                    >
+                      Mark as Delivered
+                    </Button>
+                  </ListGroup.Item>
+                )
+              )}
+              {errorPayment ? (
+                <Message variant='warning'>{errorPayment}</Message>
+              ) : (
+                userInfo.isAdmin &&
+                !orderDetails.isPaid && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn btn-dark col-12'
+                      onClick={() => paymentHandler(orderDetails._id)}
+                    >
+                      Mark as Paid
+                    </Button>
+                  </ListGroup.Item>
+                )
+              )}
             </ListGroup>
           </Card>
         </Col>

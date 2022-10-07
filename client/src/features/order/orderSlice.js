@@ -70,6 +70,8 @@ export const getOrderList = createAsyncThunk(
 ////////////
 // ADMIN ///
 ////////////
+
+// List all Orders
 export const listOrders = createAsyncThunk(
   '/orders/listOrders',
   async (props, thunkAPI) => {
@@ -91,11 +93,62 @@ export const listOrders = createAsyncThunk(
   }
 );
 
+// Mark an order as Delivered
+export const setOrderDelivered = createAsyncThunk(
+  '/orders/setOrderDelivered',
+  async (props, thunkAPI) => {
+    try {
+      const id = props;
+      const { user } = thunkAPI.getState();
+      const getUserToken = user.userInfo.token;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getUserToken}`,
+        },
+      };
+
+      return await axios.put(`/api/orders/${id}/deliver`, {}, config);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+// Mark an order as Paid
+export const setOrderPaid = createAsyncThunk(
+  '/orders/setOrderPaid',
+  async (props, thunkAPI) => {
+    try {
+      const id = props;
+      const { user } = thunkAPI.getState();
+      const getUserToken = user.userInfo.token;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getUserToken}`,
+        },
+      };
+
+      return await axios.put(`/api/orders/${id}/pay`, {}, config);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 // INITIAL VARIABLES
 const initialState = {
   // Admin Variables
   orderList: [],
   successOrder: false,
+  loadingOrderDetail: true,
+  successDeliver: false,
+  errorDeliver: '',
+  loadingDeliver: true,
+  successPayment: false,
+  errorPayment: '',
+  loadingPayment: true,
   // User Variables
   loadingOrder: true,
   success: false,
@@ -171,21 +224,54 @@ const orderSlice = createSlice({
     ////////////
     // ADMIN ///
     ////////////
+
     // Get All Orders / Admin
     [listOrders.pending]: (state) => {
-      state.loadingOrder = true;
+      state.loadingOrderDetail = true;
       state.error = '';
       state.successOrder = false;
     },
     [listOrders.fulfilled]: (state, action) => {
-      state.loadingOrder = false;
+      state.loadingOrderDetail = false;
       state.orderList = action.payload;
       state.successOrder = true;
     },
     [listOrders.rejected]: (state, action) => {
-      state.loadingOrder = false;
+      state.loadingOrderDetail = false;
       state.error = action.payload;
       state.successOrder = false;
+    },
+
+    // Mark an order as Delivered / Admin
+    [setOrderDelivered.pending]: (state) => {
+      state.successDeliver = false;
+      state.errorDeliver = '';
+      state.loadingDeliver = true;
+    },
+    [setOrderDelivered.fulfilled]: (state, action) => {
+      state.successDeliver = true;
+      state.loadingDeliver = false;
+    },
+    [setOrderDelivered.rejected]: (state, action) => {
+      state.errorDeliver = action.payload;
+      state.successDeliver = false;
+      state.loadingDeliver = false;
+    },
+
+    // Mark an order as Paid / Admin
+    [setOrderPaid.pending]: (state) => {
+      state.successPayment = false;
+      state.errorPayment = '';
+      state.loadingPayment = true;
+    },
+    [setOrderPaid.fulfilled]: (state, action) => {
+      state.successPayment = true;
+      state.loadingPayment = false;
+    },
+    [setOrderPaid.rejected]: (state, action) => {
+      state.errorPayment = action.payload;
+      state.successPayment = false;
+      state.loadingPayment = false;
     },
   },
 });
