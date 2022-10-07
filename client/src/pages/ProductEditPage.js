@@ -49,12 +49,9 @@ const ProductEditPage = () => {
   }, [dispatch, navigate, productId, product, successUpdate]);
 
   const uploadFileHandler = async (e) => {
-    console.log(e.target.files[0]);
     const file = e.target.files[0];
     const formData = new FormData();
     formData.append('image', file);
-    console.log(file);
-    console.log(formData);
     setUploading(true);
 
     try {
@@ -104,7 +101,7 @@ const ProductEditPage = () => {
         ) : error ? (
           <Message variant='warning'>{error}</Message>
         ) : (
-          <Form onSubmit={submitHandler}>
+          <Form onSubmit={submitHandler} encType='multipart/form-data'>
             <Form.Group controlId='name'>
               <Form.Label className='mb-1'>Name</Form.Label>
               <Form.Control
@@ -123,19 +120,17 @@ const ProductEditPage = () => {
                 placeholder='Enter price'
               ></Form.Control>
             </Form.Group>
-            <Form.Group controlId='image' className='mt-3'>
-              <Form.Label className='mb-1'>Image</Form.Label>
+            <Form.Group controlId='image'>
+              <Form.Label>Image</Form.Label>
               <Form.Control
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
                 type='text'
                 placeholder='Enter image url'
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
-              <input
+              <Form.Control
                 type='file'
-                id='image-file'
                 label='Choose file'
-                custom
                 onChange={uploadFileHandler}
               />
               {uploading && <Loader />}
