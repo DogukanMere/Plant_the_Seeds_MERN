@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Form, Button, Row, Col, Table } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { updateUserInfo } from '../features/user/userSlice';
-import { getOrderList } from '../features/order/orderSlice';
+import { getOrderList, getOrderDetails } from '../features/order/orderSlice';
 
 const ProfilePage = () => {
   const [name, setName] = useState('');
@@ -53,6 +53,11 @@ const ProfilePage = () => {
       setMessage(null);
       dispatch(updateUserInfo({ id: userInfo._id, name, email, password }));
     }
+  };
+
+  const orderDetailHandler = async (id) => {
+    await dispatch(getOrderDetails(id));
+    navigate(`/order/${id}`);
   };
 
   return (
@@ -135,14 +140,15 @@ const ProfilePage = () => {
                     <td>{order.isPaid ? 'Paid' : 'Not Paid'}</td>
                     <td>{order.isDelivered ? 'Delivered' : 'Not Delivered'}</td>
                     <td>
-                      <a
-                        href={`/order/${order._id}`}
-                        className='text-decoration-none'
-                      >
-                        <Button variant='dark' className='btn-sm px-2 py-0'>
+                      <Link to={`/order/${order._id}`}>
+                        <Button
+                          variant='dark'
+                          className='btn-sm'
+                          onClick={() => orderDetailHandler(order._id)}
+                        >
                           Details
                         </Button>
-                      </a>
+                      </Link>
                     </td>
                   </tr>
                 );

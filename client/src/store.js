@@ -3,6 +3,7 @@ import productReducer from './features/product/productSlice';
 import cartReducer from './features/cart/cartSlice';
 import userReducer from './features/user/userSlice';
 import orderReducer from './features/order/orderSlice';
+import thunk from 'redux-thunk';
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     user: userReducer,
     order: orderReducer,
   },
+  middleware: [thunk],
 });
 
 export default store;

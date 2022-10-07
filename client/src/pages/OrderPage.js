@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Row, Card, Col, ListGroup, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Loader from '../components/Loader';
@@ -8,15 +8,21 @@ import { getOrderDetails } from '../features/order/orderSlice';
 import { useEffect } from 'react';
 
 function OrderPage() {
-  const { id } = useParams();
+  const navigate = useNavigate();
+  const { id: orderId } = useParams();
   const dispatch = useDispatch();
   const { orderDetails, loadingOrder, error } = useSelector(
     (state) => state.order
   );
+  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(getOrderDetails(id));
-  }, [dispatch, id]);
+    if (userInfo) {
+      dispatch(getOrderDetails(orderId));
+    } else {
+      navigate('/login');
+    }
+  }, [dispatch, navigate, userInfo, orderId]);
 
   return loadingOrder ? (
     <Loader />
@@ -30,14 +36,12 @@ function OrderPage() {
           <ListGroup variant='flush'>
             <ListGroup.Item>
               <h2>Details</h2>
-              <p>
-                <strong>Name: </strong> {orderDetails.user.name}
-              </p>
+              <p>{/* <strong>Name: </strong> {orderDetails.user.name} */}</p>
               <p>
                 <strong>Email: </strong>
-                <a href={`mailto:${orderDetails.user.email}`}>
+                {/* <a href={`mailto:${orderDetails.user.email}`}>
                   {orderDetails.user.email}
-                </a>
+                </a> */}
               </p>
             </ListGroup.Item>
             <ListGroup.Item>

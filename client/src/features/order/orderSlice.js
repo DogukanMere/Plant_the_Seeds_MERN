@@ -45,7 +45,7 @@ export const getOrderDetails = createAsyncThunk(
   }
 );
 
-// GET USER MY ORDER LIST
+// GET MY ORDER LIST
 export const getOrderList = createAsyncThunk(
   '/orders/getOrderList',
   async (props, thunkAPI) => {
@@ -67,8 +67,36 @@ export const getOrderList = createAsyncThunk(
   }
 );
 
+////////////
+// ADMIN ///
+////////////
+export const listOrders = createAsyncThunk(
+  '/orders/listOrders',
+  async (props, thunkAPI) => {
+    try {
+      const { user } = thunkAPI.getState();
+      const getUserToken = user.userInfo.token;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getUserToken}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/orders/`, config);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 // INITIAL VARIABLES
 const initialState = {
+  // Admin Variables
+  orderList: [],
+  successOrder: false,
+  // User Variables
   loadingOrder: true,
   success: false,
   order: {},
@@ -138,6 +166,26 @@ const orderSlice = createSlice({
       state.loadingOrder = false;
       state.error = action.payload;
       state.success = false;
+    },
+
+    ////////////
+    // ADMIN ///
+    ////////////
+    // Get All Orders / Admin
+    [listOrders.pending]: (state) => {
+      state.loadingOrder = true;
+      state.error = '';
+      state.successOrder = false;
+    },
+    [listOrders.fulfilled]: (state, action) => {
+      state.loadingOrder = false;
+      state.orderList = action.payload;
+      state.successOrder = true;
+    },
+    [listOrders.rejected]: (state, action) => {
+      state.loadingOrder = false;
+      state.error = action.payload;
+      state.successOrder = false;
     },
   },
 });

@@ -52,11 +52,19 @@ const getOrderById = asyncHandler(async (req, res) => {
 });
 
 // GET - /api/orders/orderlist
-// Get logged in user orders| Private
+// Get logged in user orders| Private - Admin
 const getOrderList = asyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user._id });
 
   res.json(orders);
 });
 
-module.exports = { addOrderItems, getOrderById, getOrderList };
+// GET - /api/orders
+// Get all orders from db | Private - Admin
+const getOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find({}).populate('user', 'id name');
+
+  res.json(orders);
+});
+
+module.exports = { addOrderItems, getOrderById, getOrderList, getOrders };
