@@ -34,6 +34,7 @@ const HomePage = () => {
                 xl={3}
                 style={{ width: '17rem' }}
                 key={product._id}
+                className='align-items-stretch d-flex'
               >
                 <Product product={product} />
               </Col>

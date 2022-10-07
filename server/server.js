@@ -29,7 +29,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+const folder = path.resolve();
+app.use('/uploads', express.static(path.join(folder, '/uploads')));
 
 // error handlers
 app.use(notFound);
