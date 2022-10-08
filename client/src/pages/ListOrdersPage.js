@@ -5,8 +5,12 @@ import { Table, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listOrders } from '../features/order/orderSlice';
-import { getOrderDetails } from '../features/order/orderSlice';
+import {
+  listOrders,
+  getOrderDetails,
+  deleteOrder,
+  resetDeleteSuccess,
+} from '../features/order/orderSlice';
 
 const ListOrdersPage = () => {
   const dispatch = useDispatch();
@@ -16,20 +20,25 @@ const ListOrdersPage = () => {
     orderList,
     error: errorOrder,
     loadingOrderDetail,
+    successDelete,
   } = useSelector((state) => state.order);
   const { userInfo } = useSelector((state) => state.user);
   useEffect(() => {
+    if (successDelete) {
+      dispatch(resetDeleteSuccess());
+      navigate('/admin/orderlist');
+    }
     if (userInfo && userInfo.isAdmin) {
       dispatch(listOrders());
     } else {
       navigate('/login');
     }
-  }, [dispatch, navigate, userInfo]);
+  }, [dispatch, navigate, userInfo, successDelete]);
 
   const deleteHandler = (id) => {
-    // if (window.confirm('Are you sure')) {
-    //   dispatch(deleteUser(id));
-    // }
+    if (window.confirm('Are you sure')) {
+      dispatch(deleteOrder(id));
+    }
   };
 
   const orderDetailHandler = async (id) => {
@@ -106,14 +115,6 @@ const ListOrdersPage = () => {
                     >
                       <i className='fas fa-trash'></i>
                     </Button>
-                    <LinkContainer
-                      to={`/order/${order._id}`}
-                      className='text-decoration-none'
-                    >
-                      <Button variant='dark' className='btn-sm'>
-                        Details
-                      </Button>
-                    </LinkContainer>
                   </td>
                 </tr>
               );

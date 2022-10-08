@@ -91,6 +91,19 @@ const updateIsPaid = asyncHandler(async (req, res) => {
   res.json(updatedPayment);
 });
 
+// DELETE - /api/orders/:id
+// Delete a data from Db - Private-Admin
+const deleteOrder = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  if (order) {
+    await order.remove();
+    res.json({ message: 'Order successfully deleted' });
+  } else {
+    res.status(404);
+    throw new Error('Order not found!');
+  }
+});
+
 module.exports = {
   addOrderItems,
   getOrderById,
@@ -98,4 +111,5 @@ module.exports = {
   getOrders,
   updateIsDelivered,
   updateIsPaid,
+  deleteOrder,
 };

@@ -47,6 +47,7 @@ const App = () => {
                 path='/admin/product/:id/edit'
                 element={<ProductEditPage />}
               />
+              <Route path='/search/:keyword' element={<HomePage />} />
               <Route path='/' element={<HomePage />} index />
             </Routes>
           </Container>

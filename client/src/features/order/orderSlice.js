@@ -137,6 +137,26 @@ export const setOrderPaid = createAsyncThunk(
   }
 );
 
+// Delete product / Admin
+export const deleteOrder = createAsyncThunk(
+  '/products/deleteOrder',
+  async (props, thunkAPI) => {
+    try {
+      const id = props;
+      const { user } = thunkAPI.getState();
+      const { userInfo } = user;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      return await axios.delete(`/api/orders/${id}`, config);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 // INITIAL VARIABLES
 const initialState = {
   // Admin Variables
@@ -145,10 +165,13 @@ const initialState = {
   loadingOrderDetail: true,
   successDeliver: false,
   errorDeliver: '',
-  loadingDeliver: true,
+  loadingDeliver: false,
   successPayment: false,
   errorPayment: '',
-  loadingPayment: true,
+  loadingPayment: false,
+  loadingDelete: false,
+  errorDelete: '',
+  successDelete: false,
   // User Variables
   loadingOrder: true,
   success: false,
@@ -166,6 +189,9 @@ const orderSlice = createSlice({
       state.order = {};
       state.orders = [];
       state.orderDetails = {};
+    },
+    resetDeleteSuccess: (state) => {
+      state.successDelete = false;
     },
   },
   extraReducers: {
@@ -273,8 +299,22 @@ const orderSlice = createSlice({
       state.successPayment = false;
       state.loadingPayment = false;
     },
+    // Delete single order
+    // DELETE - /api/orders/:id
+    [deleteOrder.pending]: (state) => {
+      state.loadingDelete = true;
+      state.errorDelete = '';
+    },
+    [deleteOrder.fulfilled]: (state, action) => {
+      state.loadingDelete = false;
+      state.successDelete = true;
+    },
+    [deleteOrder.rejected]: (state, action) => {
+      state.loadingDelete = false;
+      state.errorDelete = action.payload;
+    },
   },
 });
 
-export const { removeOrderDetails } = orderSlice.actions;
+export const { removeOrderDetails, resetDeleteSuccess } = orderSlice.actions;
 export default orderSlice.reducer;

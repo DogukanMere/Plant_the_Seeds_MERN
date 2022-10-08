@@ -23,6 +23,8 @@ function OrderPage() {
     errorPayment,
     successDeliver,
     successPayment,
+    loadingDeliver,
+    loadingPayment,
   } = useSelector((state) => state.order);
   const { userInfo } = useSelector((state) => state.user);
 
@@ -169,9 +171,11 @@ function OrderPage() {
                   <Col>${orderDetails.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
+              {loadingDeliver && <Loader />}
               {errorDeliver ? (
                 <Message variant='warning'>{errorDeliver}</Message>
               ) : (
+                userInfo &&
                 userInfo.isAdmin &&
                 !orderDetails.isDelivered && (
                   <ListGroup.Item>
@@ -185,9 +189,11 @@ function OrderPage() {
                   </ListGroup.Item>
                 )
               )}
+              {loadingPayment && <Loader />}
               {errorPayment ? (
                 <Message variant='warning'>{errorPayment}</Message>
               ) : (
+                userInfo &&
                 userInfo.isAdmin &&
                 !orderDetails.isPaid && (
                   <ListGroup.Item>

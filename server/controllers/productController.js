@@ -5,7 +5,16 @@ const asyncHandler = require('express-async-handler');
 // GET - /api/products/
 // Get all products from DB
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ price: 1 });
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: 'i',
+        },
+      }
+    : {};
+
+  const products = await Product.find({ ...keyword }).sort({ price: 1 });
   res.status(200).json(products);
 });
 

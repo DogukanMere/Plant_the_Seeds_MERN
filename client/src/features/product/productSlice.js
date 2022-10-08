@@ -6,7 +6,8 @@ export const fetchProducts = createAsyncThunk(
   '/products/fetchProducts',
   async (props, thunkAPI) => {
     try {
-      const { data } = await axios.get('/api/products');
+      const keyword = props ? props : '';
+      const { data } = await axios.get(`/api/products?keyword=${keyword}`);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
