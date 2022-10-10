@@ -12,7 +12,7 @@ function PlaceOrderPage() {
   const { cartItems, shippingAddress, paymentMethod } = useSelector(
     (state) => state.cart
   );
-  const { order, success, error } = useSelector((state) => state.order);
+  const { order, successNewOrder, error } = useSelector((state) => state.order);
 
   const { userInfo } = useSelector((state) => state.user);
   const userId = userInfo._id;
@@ -29,10 +29,10 @@ function PlaceOrderPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (success) {
+    if (successNewOrder) {
       navigate(`/order/${order._id}`);
     }
-  }, [navigate, success, order._id]);
+  }, [navigate, successNewOrder, order._id]);
 
   const placeOrderHandler = () => {
     dispatch(

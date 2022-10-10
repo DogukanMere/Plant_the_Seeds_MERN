@@ -48,6 +48,12 @@ const App = () => {
                 element={<ProductEditPage />}
               />
               <Route path='/search/:keyword' element={<HomePage />} />
+              <Route path='/page/:pageNumber' element={<HomePage />} index />
+              <Route
+                path='/search/:keyword/page/:pageNumber'
+                element={<HomePage />}
+                index
+              />
               <Route path='/' element={<HomePage />} index />
             </Routes>
           </Container>

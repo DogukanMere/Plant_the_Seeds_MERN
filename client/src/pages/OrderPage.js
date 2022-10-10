@@ -8,8 +8,11 @@ import {
   getOrderDetails,
   setOrderDelivered,
   setOrderPaid,
+  reduceAmountInStock,
+  emptyOrder,
 } from '../features/order/orderSlice';
 import { useEffect } from 'react';
+import { emptyCart } from '../features/cart/cartSlice';
 
 function OrderPage() {
   const navigate = useNavigate();
@@ -25,16 +28,51 @@ function OrderPage() {
     successPayment,
     loadingDeliver,
     loadingPayment,
+    order,
   } = useSelector((state) => state.order);
   const { userInfo } = useSelector((state) => state.user);
 
+  const { cartItems } = useSelector((state) => state.cart);
+
+  const itemsInCart = cartItems;
+
   useEffect(() => {
-    if (userInfo) {
-      dispatch(getOrderDetails(orderId));
+    if (order.user) {
+      itemsInCart.map((x) => {
+        return dispatch(
+          reduceAmountInStock({
+            id: x.product,
+            name: x.name,
+            price: x.price,
+            image: x.image,
+            amountInStock: x.amountInStock,
+            description: x.description,
+            yield: x.yield,
+            growTime: x.growTime,
+            qty: x.qty,
+          })
+        );
+      });
+      dispatch(emptyCart());
+      dispatch(emptyOrder());
     } else {
-      navigate('/login');
+      if (userInfo) {
+        dispatch(getOrderDetails(orderId));
+      } else {
+        navigate('/login');
+      }
     }
-  }, [dispatch, navigate, userInfo, orderId, successDeliver, successPayment]);
+  }, [
+    dispatch,
+    navigate,
+    userInfo,
+    orderId,
+    successDeliver,
+    successPayment,
+    order,
+    cartItems,
+    itemsInCart,
+  ]);
 
   const deliverHandler = (id) => {
     dispatch(setOrderDelivered(id));

@@ -157,6 +157,33 @@ export const deleteOrder = createAsyncThunk(
   }
 );
 
+// Reduce available seed amount from db
+export const reduceAmountInStock = createAsyncThunk(
+  '/users/reduceAmountInStock',
+  async (props, thunkAPI) => {
+    try {
+      const productUpdateInfo = props;
+      const { id } = props;
+      const { user } = thunkAPI.getState();
+      const { userInfo } = user;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `/api/orders/${id}`,
+        productUpdateInfo,
+        config
+      );
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 // INITIAL VARIABLES
 const initialState = {
   // Admin Variables
@@ -172,6 +199,10 @@ const initialState = {
   loadingDelete: false,
   errorDelete: '',
   successDelete: false,
+  successNewOrder: false,
+  loadingUpdate: true,
+  errorUpdate: '',
+  successUpdate: false,
   // User Variables
   loadingOrder: true,
   success: false,
@@ -190,6 +221,9 @@ const orderSlice = createSlice({
       state.orders = [];
       state.orderDetails = {};
     },
+    emptyOrder: (state) => {
+      state.order = {};
+    },
     resetDeleteSuccess: (state) => {
       state.successDelete = false;
     },
@@ -199,18 +233,18 @@ const orderSlice = createSlice({
     [createOrder.pending]: (state) => {
       state.loadingOrder = true;
       state.error = '';
-      state.success = false;
+      state.successNewOrder = false;
     },
     [createOrder.fulfilled]: (state, action) => {
       state.loadingOrder = false;
       state.order = action.payload;
       state.orderDetails = action.payload;
-      state.success = true;
+      state.successNewOrder = true;
     },
     [createOrder.rejected]: (state, action) => {
       state.loadingOrder = false;
       state.error = action.payload;
-      state.success = false;
+      state.successNewOrder = false;
     },
 
     // Get Order by Id
@@ -223,6 +257,7 @@ const orderSlice = createSlice({
       state.loadingOrder = false;
       state.orderDetails = action.payload;
       state.success = true;
+      state.successNewOrder = false;
     },
     [getOrderDetails.rejected]: (state, action) => {
       state.loadingOrder = false;
@@ -313,8 +348,24 @@ const orderSlice = createSlice({
       state.loadingDelete = false;
       state.errorDelete = action.payload;
     },
+    // Update amount in stock
+    // PUT - /api/orders
+    [reduceAmountInStock.pending]: (state) => {
+      state.loadingUpdate = true;
+      state.errorUpdate = '';
+      state.successUpdate = false;
+    },
+    [reduceAmountInStock.fulfilled]: (state, action) => {
+      state.loadingUpdate = false;
+      state.successUpdate = true;
+    },
+    [reduceAmountInStock.rejected]: (state, action) => {
+      state.loadingUpdate = false;
+      state.errorUpdate = action.payload;
+    },
   },
 });
 
-export const { removeOrderDetails, resetDeleteSuccess } = orderSlice.actions;
+export const { removeOrderDetails, resetDeleteSuccess, emptyOrder } =
+  orderSlice.actions;
 export default orderSlice.reducer;

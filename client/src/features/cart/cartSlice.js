@@ -15,12 +15,16 @@ export const addToCart = createAsyncThunk(
     const { id, qty } = props;
     const { data } = await axios.get(`/api/products/${id}`);
     const payload = {
+      id: data._id,
       product: data._id,
       name: data.name,
       image: data.image,
       price: data.price,
       amountInStock: data.amountInStock,
       qty: Number(qty),
+      description: data.description,
+      growTime: data.growTime,
+      yield: data.yield,
     };
 
     // Check if manually entered qty  is bigger of smaller than amount in stock
@@ -102,6 +106,10 @@ const cartSlice = createSlice({
   },
 });
 
-export const { removeFromCart, saveShippingAddress, savePaymentMethod } =
-  cartSlice.actions;
+export const {
+  removeFromCart,
+  saveShippingAddress,
+  savePaymentMethod,
+  emptyCart,
+} = cartSlice.actions;
 export default cartSlice.reducer;

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../features/product/productSlice';
 import { Row, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import Meta from '../components/Meta';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Product from '../components/Product';
@@ -22,6 +23,7 @@ const HomePage = () => {
   }, [dispatch, keyword]);
   return (
     <>
+      <Meta />
       <h2 className='fs-2 text-dark'>Listed Products</h2>
       <Search />
       {isLoading ? (

@@ -7,6 +7,7 @@ const {
   updateIsDelivered,
   updateIsPaid,
   deleteOrder,
+  updateStockAmount,
 } = require('../controllers/orderController');
 const protect = require('../middleware/authMiddleware');
 const admin = require('../middleware/adminMiddleware');
@@ -19,7 +20,8 @@ router.route('/orderlist').get(protect, getOrderList);
 router
   .route('/:id')
   .get(protect, getOrderById)
-  .delete(protect, admin, deleteOrder);
+  .delete(protect, admin, deleteOrder)
+  .put(protect, updateStockAmount);
 router.route('/:id/deliver').put(protect, admin, updateIsDelivered);
 router.route('/:id/pay').put(protect, admin, updateIsPaid);
 

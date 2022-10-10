@@ -1,4 +1,5 @@
 const Order = require('../models/orderModule');
+const Product = require('../models/productModule');
 const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
 const { create } = require('../models/orderModule');
@@ -104,6 +105,40 @@ const deleteOrder = asyncHandler(async (req, res) => {
   }
 });
 
+// PUT - /api/orders
+// Update amount in stock
+const updateStockAmount = asyncHandler(async (req, res) => {
+  const {
+    name,
+    price,
+    description,
+    image,
+    amountInStock,
+    qty,
+    yield,
+    growTime,
+  } = req.body;
+
+  const product = await Product.findById(req.params.id);
+
+  if (product) {
+    product.name = name;
+    product.price = price;
+    product.description = description;
+    product.image = image;
+    product.amountInStock = amountInStock - qty;
+    product.growTime = growTime;
+    product.yield = yield;
+
+    const updatedProduct = await product.save();
+
+    res.json(updatedProduct);
+  } else {
+    res.status(404);
+    throw new Error('Product not found!');
+  }
+});
+
 module.exports = {
   addOrderItems,
   getOrderById,
@@ -112,4 +147,5 @@ module.exports = {
   updateIsDelivered,
   updateIsPaid,
   deleteOrder,
+  updateStockAmount,
 };

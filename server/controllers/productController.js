@@ -14,8 +14,9 @@ const getProducts = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const products = await Product.find({ ...keyword }).sort({ price: 1 });
-  res.status(200).json(products);
+  const products = await Product.find({ ...keyword });
+
+  res.status(200).json({ products });
 });
 
 // GET - /api/products/:id
