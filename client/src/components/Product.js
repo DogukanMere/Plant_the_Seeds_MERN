@@ -6,7 +6,11 @@ const Product = ({ product }) => {
   return (
     <Card className='rounded my-2 border-main overflow-hidden'>
       <Link to={`/product/${product._id}`}>
-        <Card.Img src={product.image} variant='top' />
+        <Card.Img
+          src={product.image}
+          variant='top'
+          style={{ width: '15rem', height: '15rem' }}
+        />
       </Link>
       <Card.Body>
         <Link to={`/product/${product._id}`} className='text-decoration-none'>

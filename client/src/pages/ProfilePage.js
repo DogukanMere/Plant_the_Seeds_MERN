@@ -60,6 +60,14 @@ const ProfilePage = () => {
     navigate(`/order/${id}`);
   };
 
+  // const getProgress = (days) => {
+  //   var date1 = new Date().toISOString(),
+  //     date2 = new Date(days).toISOString();
+  //   // console.log(date2);
+  //   var diff = date1 - date2;
+  //   console.log(diff);
+  // };
+
   return (
     <Row>
       <Col md={3}>
@@ -127,6 +135,7 @@ const ProfilePage = () => {
                 <th>TOTAL</th>
                 <th>PAID</th>
                 <th>DELIVERED</th>
+                {/* <th>PROGRESS</th> */}
                 <th></th>
               </tr>
             </thead>
@@ -139,6 +148,7 @@ const ProfilePage = () => {
                     <td>{order.totalPrice}</td>
                     <td>{order.isPaid ? 'Paid' : 'Not Paid'}</td>
                     <td>{order.isDelivered ? 'Delivered' : 'Not Delivered'}</td>
+                    {/* <td>{getProgress(order.createdAt)}</td> */}
                     <td>
                       <Link to={`/order/${order._id}`}>
                         <Button

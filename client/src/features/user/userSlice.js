@@ -201,6 +201,9 @@ const userSlice = createSlice({
       localStorage.removeItem('userInfo');
       state.userInfo = null;
     },
+    resetDeleteSuccess: (state) => {
+      state.success = false;
+    },
   },
   extraReducers: {
     // get User
@@ -314,5 +317,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { logoutUser } = userSlice.actions;
+export const { logoutUser, resetDeleteSuccess } = userSlice.actions;
 export default userSlice.reducer;

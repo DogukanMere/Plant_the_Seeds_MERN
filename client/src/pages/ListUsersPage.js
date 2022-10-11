@@ -5,7 +5,11 @@ import { Table, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listUsers, deleteUser } from '../features/user/userSlice';
+import {
+  listUsers,
+  deleteUser,
+  resetDeleteSuccess,
+} from '../features/user/userSlice';
 
 const ListUsersPage = () => {
   const dispatch = useDispatch();
@@ -20,6 +24,11 @@ const ListUsersPage = () => {
   } = useSelector((state) => state.user);
 
   useEffect(() => {
+    if (successDelete) {
+      dispatch(resetDeleteSuccess());
+      navigate('/admin/userlist');
+    }
+
     if (userInfo && userInfo.isAdmin) {
       dispatch(listUsers());
     } else {
