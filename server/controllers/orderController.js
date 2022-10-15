@@ -92,6 +92,18 @@ const updateIsPaid = asyncHandler(async (req, res) => {
   res.json(updatedPayment);
 });
 
+// PUT - /api/orders/:id/request
+// Update Farm Request| Public - Secure
+const updateFarmRequest = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.isReady = !order.isReady;
+  }
+  const updatedRequest = await order.save();
+  res.json(updatedRequest);
+});
+
 // DELETE - /api/orders/:id
 // Delete a data from Db - Private-Admin
 const deleteOrder = asyncHandler(async (req, res) => {
@@ -148,4 +160,5 @@ module.exports = {
   updateIsPaid,
   deleteOrder,
   updateStockAmount,
+  updateFarmRequest,
 };

@@ -8,6 +8,7 @@ const {
   updateIsPaid,
   deleteOrder,
   updateStockAmount,
+  updateFarmRequest,
 } = require('../controllers/orderController');
 const protect = require('../middleware/authMiddleware');
 const admin = require('../middleware/adminMiddleware');
@@ -24,5 +25,6 @@ router
   .put(protect, updateStockAmount);
 router.route('/:id/deliver').put(protect, admin, updateIsDelivered);
 router.route('/:id/pay').put(protect, admin, updateIsPaid);
+router.route('/:id/request').put(protect, updateFarmRequest);
 
 module.exports = router;

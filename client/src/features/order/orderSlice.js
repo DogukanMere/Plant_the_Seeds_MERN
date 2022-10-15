@@ -137,6 +137,28 @@ export const setOrderPaid = createAsyncThunk(
   }
 );
 
+// Make Farm Request
+export const setFarmRequest = createAsyncThunk(
+  '/orders/setFarmRequest',
+  async (props, thunkAPI) => {
+    try {
+      const id = props;
+      const { user } = thunkAPI.getState();
+      const getUserToken = user.userInfo.token;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getUserToken}`,
+        },
+      };
+
+      return await axios.put(`/api/orders/${id}/request`, {}, config);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 // Delete product / Admin
 export const deleteOrder = createAsyncThunk(
   '/products/deleteOrder',
@@ -203,6 +225,9 @@ const initialState = {
   loadingUpdate: true,
   errorUpdate: '',
   successUpdate: false,
+  loadingRequest: false,
+  errorRequest: '',
+  successRequest: false,
   // User Variables
   loadingOrder: true,
   success: false,
@@ -226,6 +251,9 @@ const orderSlice = createSlice({
     },
     resetDeleteSuccess: (state) => {
       state.successDelete = false;
+    },
+    resetRequestSuccess: (state) => {
+      state.successRequest = false;
     },
   },
   extraReducers: {
@@ -282,6 +310,22 @@ const orderSlice = createSlice({
       state.success = false;
     },
 
+    // Make farm request
+    [setFarmRequest.pending]: (state) => {
+      state.succesRequest = false;
+      state.errorRequest = '';
+      state.loadingRequest = true;
+    },
+    [setFarmRequest.fulfilled]: (state, action) => {
+      state.successRequest = true;
+      state.loadingRequest = false;
+    },
+    [setFarmRequest.rejected]: (state, action) => {
+      state.errorRequest = action.payload;
+      state.succesRequest = false;
+      state.loadingRequest = false;
+    },
+
     ////////////
     // ADMIN ///
     ////////////
@@ -334,6 +378,7 @@ const orderSlice = createSlice({
       state.successPayment = false;
       state.loadingPayment = false;
     },
+
     // Delete single order
     // DELETE - /api/orders/:id
     [deleteOrder.pending]: (state) => {
@@ -366,6 +411,10 @@ const orderSlice = createSlice({
   },
 });
 
-export const { removeOrderDetails, resetDeleteSuccess, emptyOrder } =
-  orderSlice.actions;
+export const {
+  removeOrderDetails,
+  resetDeleteSuccess,
+  emptyOrder,
+  resetRequestSuccess,
+} = orderSlice.actions;
 export default orderSlice.reducer;

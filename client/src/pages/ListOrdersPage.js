@@ -10,6 +10,8 @@ import {
   getOrderDetails,
   deleteOrder,
   resetDeleteSuccess,
+  resetRequestSuccess,
+  setFarmRequest,
 } from '../features/order/orderSlice';
 
 const ListOrdersPage = () => {
@@ -21,6 +23,7 @@ const ListOrdersPage = () => {
     error: errorOrder,
     loadingOrderDetail,
     successDelete,
+    successRequest,
   } = useSelector((state) => state.order);
   const { userInfo } = useSelector((state) => state.user);
   useEffect(() => {
@@ -28,12 +31,16 @@ const ListOrdersPage = () => {
       dispatch(resetDeleteSuccess());
       navigate('/admin/orderlist');
     }
+    if (successRequest) {
+      dispatch(resetRequestSuccess());
+      navigate('/admin/orderlist');
+    }
     if (userInfo && userInfo.isAdmin) {
       dispatch(listOrders());
     } else {
       navigate('/login');
     }
-  }, [dispatch, navigate, userInfo, successDelete]);
+  }, [dispatch, navigate, userInfo, successDelete, successRequest]);
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure')) {
@@ -44,6 +51,10 @@ const ListOrdersPage = () => {
   const orderDetailHandler = async (id) => {
     await dispatch(getOrderDetails(id));
     navigate(`/order/${id}`);
+  };
+
+  const requestHandler = (id) => {
+    dispatch(setFarmRequest(id));
   };
   return (
     <>
@@ -62,6 +73,7 @@ const ListOrdersPage = () => {
               <th>TOTAL</th>
               <th>PAID</th>
               <th>DELIVERED</th>
+              <th>FARM VISIT REQUEST</th>
             </tr>
           </thead>
           <tbody>
@@ -91,6 +103,32 @@ const ListOrdersPage = () => {
                         className='fa-solid fa-check'
                         style={{ color: 'green' }}
                       ></i>
+                    ) : (
+                      <i
+                        className='fa-solid fa-xmark'
+                        style={{ color: 'red' }}
+                      ></i>
+                    )}
+                  </td>
+                  <td>
+                    {order.isDelivered ? (
+                      <p>Order delivered</p>
+                    ) : order.isReady ? (
+                      <>
+                        <span
+                          style={{ color: 'green' }}
+                          className='fw-bold me-3'
+                        >
+                          Requested
+                        </span>
+                        <Button
+                          variant='success'
+                          className='btn-sm'
+                          onClick={() => requestHandler(order._id)}
+                        >
+                          Complete
+                        </Button>
+                      </>
                     ) : (
                       <i
                         className='fa-solid fa-xmark'

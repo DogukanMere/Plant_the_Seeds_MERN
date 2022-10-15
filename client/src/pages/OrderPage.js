@@ -10,6 +10,7 @@ import {
   setOrderPaid,
   reduceAmountInStock,
   emptyOrder,
+  setFarmRequest,
 } from '../features/order/orderSlice';
 import { useEffect } from 'react';
 import { emptyCart } from '../features/cart/cartSlice';
@@ -29,6 +30,9 @@ function OrderPage() {
     loadingDeliver,
     loadingPayment,
     order,
+    loadingRequest,
+    errorRequest,
+    successRequest,
   } = useSelector((state) => state.order);
   const { userInfo } = useSelector((state) => state.user);
 
@@ -69,6 +73,7 @@ function OrderPage() {
     orderId,
     successDeliver,
     successPayment,
+    successRequest,
     order,
     cartItems,
     itemsInCart,
@@ -80,6 +85,10 @@ function OrderPage() {
 
   const paymentHandler = (id) => {
     dispatch(setOrderPaid(id));
+  };
+
+  const requestHandler = (id) => {
+    dispatch(setFarmRequest(id));
   };
 
   return loadingOrder ? (
@@ -103,6 +112,22 @@ function OrderPage() {
                   {orderDetails.user.email}
                 </a>
               </p>
+              <p>
+                <strong>Farm Request: </strong>
+              </p>
+              {orderDetails.isDelivered ? (
+                <Message variant='success'>
+                  This order is already delivered
+                </Message>
+              ) : orderDetails.isReady ? (
+                <Message variant='success'>
+                  You have made a farm request
+                </Message>
+              ) : (
+                <Message variant='warning'>
+                  There is no active farm request
+                </Message>
+              )}
             </ListGroup.Item>
             <ListGroup.Item>
               <h2>Shipping</h2>
@@ -209,6 +234,24 @@ function OrderPage() {
                   <Col>${orderDetails.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
+              {loadingRequest && <Loader />}
+              {errorRequest ? (
+                <Message variant='warning'>{errorRequest}</Message>
+              ) : (
+                userInfo &&
+                !orderDetails.isReady &&
+                !orderDetails.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn btn-primary col-12'
+                      onClick={() => requestHandler(orderDetails._id)}
+                    >
+                      Request Farm Visit
+                    </Button>
+                  </ListGroup.Item>
+                )
+              )}
               {loadingDeliver && <Loader />}
               {errorDeliver ? (
                 <Message variant='warning'>{errorDeliver}</Message>

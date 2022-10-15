@@ -225,6 +225,7 @@ const userSlice = createSlice({
     [registerUser.pending]: (state) => {
       state.loading = true;
       state.errorRegister = '';
+      state.success = false;
     },
     [registerUser.fulfilled]: (state, action) => {
       state.loading = false;
@@ -240,6 +241,7 @@ const userSlice = createSlice({
     [updateUserInfo.pending]: (state) => {
       state.loading = true;
       state.errorUpdate = '';
+      state.success = false;
     },
     [updateUserInfo.fulfilled]: (state, action) => {
       state.loading = false;

@@ -135,6 +135,7 @@ const ProfilePage = () => {
                 <th>TOTAL</th>
                 <th>PAID</th>
                 <th>DELIVERED</th>
+                <th>FARM VISIT REQUEST</th>
                 {/* <th>PROGRESS</th> */}
                 <th></th>
               </tr>
@@ -148,6 +149,23 @@ const ProfilePage = () => {
                     <td>{order.totalPrice}</td>
                     <td>{order.isPaid ? 'Paid' : 'Not Paid'}</td>
                     <td>{order.isDelivered ? 'Delivered' : 'Not Delivered'}</td>
+                    <td>
+                      {order.isDelivered ? (
+                        <p>Order delivered</p>
+                      ) : order.isReady ? (
+                        <>
+                          <i
+                            className='fa-solid fa-check'
+                            style={{ color: 'green' }}
+                          ></i>
+                        </>
+                      ) : (
+                        <i
+                          className='fa-solid fa-xmark'
+                          style={{ color: 'red' }}
+                        ></i>
+                      )}
+                    </td>
                     {/* <td>{getProgress(order.createdAt)}</td> */}
                     <td>
                       <Link to={`/order/${order._id}`}>
