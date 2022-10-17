@@ -93,7 +93,7 @@ const updateIsPaid = asyncHandler(async (req, res) => {
 });
 
 // PUT - /api/orders/:id/request
-// Update Farm Request| Public - Secure
+// Update Farm Request| Public
 const updateFarmRequest = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
 
