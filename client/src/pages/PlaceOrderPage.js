@@ -136,7 +136,7 @@ function PlaceOrderPage() {
               <ListGroup.Item>
                 <Row className='fw-bold'>
                   <Col>Total</Col>
-                  <Col>${totalPrice}</Col>
+                  <Col>${totalPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
